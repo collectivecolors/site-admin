@@ -1,0 +1,190 @@
+#!/bin/bash
+#-------------------------------------------------------------------------------
+#
+# add_db <database> [ <db-user> ]
+#
+#-------------------------------------------------------------------------------
+# Properties
+
+HELP="
+The add_db command creates a database and a user in MySQL and grants all
+privileges to that user on the database created.
+
+--------------------------------------------------------------------------------
+
+ Developed by Adrian Webb of http://collectivecolors.com
+ Licensed under GPL v2
+
+ See the project page at:  http://github.com/collectivecolors/site-admin
+ Report issues here:       http://github.com/collectivecolors/site-admin/issues
+ 
+--------------------------------------------------------------------------------
+"
+
+USAGE="
+usage: add_db [ -h | --help ]             # Show usage information
+              ------------------------------------------------------------------
+              [ -r | --root <root-name> ] # Root database name (run as)
+                                          # Defaults to "root"
+              ------------------------------------------------------------------
+              <database>                  # Database name to create 
+                                          # (must be 64 characters or less)
+              ------------------------------------------------------------------
+              [ <db-user> ]               # User with all privileges on this database 
+                                          # (must be 16 characters or less)
+                                          # Defaults to <database>
+"
+
+ROOT_NAME='root'
+
+
+# Parse parameters
+
+while test $# -ne 0
+do
+	case "$1" in
+	  
+  -h|--help)
+    echo "$HELP"
+    echo "$USAGE"
+    exit 0;;
+  
+	-r|--root)
+    if [ ! "$2" ]
+    then
+      echo "Root name option requires the root database user name."
+      echo "$USAGE"
+      exit 1
+    fi
+    
+		ROOT_NAME="$2"
+    shift;;
+	  
+	*) break;;
+	esac
+	shift
+done
+
+
+
+# Database
+
+DATABASE_NAME=$1
+
+if [ ! $DATABASE_NAME ]
+then
+  echo "Database name is required to setup the database."
+  exit 2
+
+# MySQL only allows for a 64 character database name.  
+elif [ ${DATABASE_NAME:0:64} != $DATABASE_NAME ]
+then
+  echo "Database name must be 64 characters or less in length."
+  exit 3
+fi
+
+DATABASE_NAME=${DATABASE_NAME//./_} # No dots
+
+
+# User
+
+USER_NAME=$2
+
+if [ ! $USER_NAME ]
+then
+  USER_NAME=$DATABASE_NAME
+
+# MySQL only allows for a 16 character user name.  
+elif [ ${USER_NAME:0:16} != $USER_NAME ]
+then
+  echo "Database user name must be 16 characters or less in length."
+  exit 4
+fi
+
+USER_NAME=${USER_NAME//./_} # No dots
+
+
+# Root password
+
+ROOT_PASSWORD=''
+
+echo -n "Enter $ROOT_NAME password: "
+read -s ROOT_PASSWORD
+echo ''
+
+if [ ! $ROOT_PASSWORD ]
+then
+  echo "You must specify a valid $ROOT_NAME password to add this database and user."
+  exit 5
+fi
+
+
+# Password
+
+PASSWORD=''
+TEST_PASSWORD=''
+
+echo -n "New password for user: $USER_NAME: "
+read -s PASSWORD
+echo ''
+
+if [ ! $PASSWORD ]
+then
+  echo "You must specify a password for this database user."
+  exit 6
+fi
+
+echo -n "Retype password: "
+read -s TEST_PASSWORD
+echo ''
+
+if [ ! $TEST_PASSWORD ]
+then
+  echo "You must retype the password as you typed it originally to proceed."
+  exit 7
+
+elif [ $TEST_PASSWORD != $PASSWORD ]
+then
+  echo "Your original and retyped passwords do not match.  Please try again."
+  exit 8
+fi
+
+
+#-------------------------------------------------------------------------------
+# Start
+
+
+mysql --user=$ROOT_NAME --password=$ROOT_PASSWORD <<EOQ
+
+
+# Create database user.
+
+CREATE USER '$USER_NAME'@'localhost' IDENTIFIED BY '$PASSWORD';
+CREATE USER '$USER_NAME'@'%' IDENTIFIED BY '$PASSWORD';
+
+FLUSH PRIVILEGES;
+
+
+# Create database.
+
+CREATE DATABASE $DATABASE_NAME;
+
+
+# Assign all privileges to user on database.
+
+GRANT ALL ON $DATABASE_NAME.* TO '$USER_NAME'@'localhost';
+GRANT ALL ON $DATABASE_NAME.* TO '$USER_NAME'@'%';
+
+FLUSH PRIVILEGES;
+EOQ
+
+[ $? != 0 ] && exit 9
+
+echo ''
+echo "You have successfully created a database:"
+echo ''
+echo "$DATABASE_NAME"
+echo ''
+echo "The following user now has full privileges on this database:"
+echo ''
+echo "$USER_NAME"

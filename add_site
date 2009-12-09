@@ -1,0 +1,269 @@
+#!/bin/bash
+#-------------------------------------------------------------------------------
+#
+# add_site [ <dest-dir> ]
+#
+#-------------------------------------------------------------------------------
+# Properties
+
+HELP="
+The add_site command creates and initializes a Drupal site.  Drupal modules that
+are commonly used (by collectivecolors) are also downloaded.
+
+You can specify which version of Drupal core you want, such as 6.14, or if you 
+do not specify a version the current recommended release will be created.  You
+can also specify the target directory for the Drupal site.  If you do not 
+specify this, then the site is installed to the current directory.
+
+--------------------------------------------------------------------------------
+
+ Developed by Adrian Webb of http://collectivecolors.com
+ Licensed under GPL v2
+
+ See the project page at:  http://github.com/collectivecolors/site-admin
+ Report issues here:       http://github.com/collectivecolors/site-admin/issues
+ 
+--------------------------------------------------------------------------------
+"
+
+USAGE="
+usage: add_site [ -h | --help ]                     # Show usage information
+                ----------------------------------------------------------------
+                [ -v | --version <drupal-version> ] # Drupal version (Ex: 6.14)
+                                                    # Defaults to current recommended
+                ----------------------------------------------------------------
+                [ -d | --domain <domain> ]          # Domain to use if this vhost is 
+                                                    # in the following directory:
+                                                    # $HOME/sites/<domain>
+                ----------------------------------------------------------------
+                [ <dest-dir> ]                      # Directory to put the site into.
+                                                    # If not specified and --domain option
+                                                    # is not set, the current directory 
+                                                    # is used
+"
+
+# Get the directory of this command.
+CMD_NAME=`basename $0`
+INIT_DIR=`which $CMD_NAME`
+  
+if [ ! "$INIT_DIR" ]
+then
+  cd `dirname $0`
+  INIT_DIR=`pwd`
+  
+else
+  INIT_DIR=`dirname $INIT_DIR`  
+fi
+
+DRUPAL_VERSION=''
+DOMAIN_NAME=''
+
+DESTINATION=''
+
+
+# Parse parameters
+
+while test $# -ne 0
+do
+	case "$1" in
+	  
+  -h|--help)
+    echo "$HELP"
+    echo "$USAGE"
+    exit 0;;
+  
+	-v|--version)
+    if [ ! "$2" ]
+    then
+      echo "Drupal version option requires a version number (Ex: 6.14)."
+      echo "$USAGE"
+      exit 1
+    fi
+    
+		DRUPAL_VERSION="$2"
+    shift;;
+	
+	-d|--domain)
+    if [ ! "$2" ]
+    then
+      echo "Domain option requires a domain name."
+      echo "$USAGE"
+      exit 2
+    fi
+    
+		DOMAIN_NAME="$2"
+    shift;;
+	 
+	*) break;;
+	esac
+	shift
+done
+
+
+# Drupal version (defaults to current recommended version)
+
+if [ $DRUPAL_VERSION ]
+then
+  if [ ! [ echo "$DRUPAL_VERSION" | grep -q -v "[^0-9\.]" ] ]
+  then
+    echo "Version must be formatted with only numbers and dot separators."
+    exit 3
+    
+  else
+    # Prepend a dash for easier injection.
+    DRUPAL_VERSION="-$DRUPAL_VERSION"
+  fi
+fi
+
+
+# Site directory (defaults to current directory)
+
+if [ $DOMAIN_NAME ]
+then
+  SITE_DIR="$HOME/sites/$DOMAIN_NAME"
+else
+  SITE_DIR="$1"
+fi
+
+if [ ! $SITE_DIR ]
+then
+  SITE_DIR='.'
+fi
+if [ ! -d $SITE_DIR ]
+then
+  mkdir -p $SITE_DIR || exit 4
+fi
+ 
+#-------------------------------------------------------------------------------
+# Functions
+
+#
+# dl_project( $PROJECT_NAME )
+#
+function dl_project() {
+  local PROJECT_NAME="$1"
+  
+  echo "Downloading project: $PROJECT_NAME"
+  
+  # Download project.
+  drush dl $PROJECT_NAME || exit 5
+
+  # Version changes!  Replace this with your own VCS if you wish.
+  git add . || exit 6
+  git commit -m "Adding project $PROJECT_NAME." || exit 7
+}
+
+
+#-------------------------------------------------------------------------------
+# Start
+
+# Move into the top level site directory.  Drush is context sensitive.
+
+cd $SITE_DIR || exit 8
+
+
+# Download Drupal into a subdirectory of the web directory.
+
+echo "Creating a download sandbox."
+
+# Create a install sandbox.
+mkdir .sandbox || exit 9
+cd .sandbox || exit 10
+
+if [ ! -z "$DRUPAL_VERSION" ]
+then
+  echo "Downloading Drupal core version $DRUPAL_VERSION."
+  
+else
+  echo "Downloading the recommended version of Drupal core."
+fi
+    
+drush dl "drupal$DRUPAL_VERSION" || exit 11
+mv drupal-*/* .. || exit 12
+
+echo "Removing installation sandbox."
+  
+cd .. || exit 13
+rm -fR .sandbox || exit 14 # Cleanup after ourselves.
+
+echo "Overriding the Apache .htaccess file."
+cp -f "$INIT_DIR/overrides/.htaccess" .htaccess || exit 15
+
+# Version it!  Replace with the VCS of your choice.  Git is awesome, though.
+
+echo "Making initial commit of Drupal site."
+
+# Set up ignored files and directories.
+cat <<EOF > .gitignore
+# Ignore data directory.
+sites/default
+EOF
+
+if [ "$?" -ne 0 ]
+then
+  exit 16
+fi
+
+git init || exit 17 
+git add . || exit 18
+git commit -m "Initial commit of Drupal$DRUPAL_VERSION" || exit 19
+
+
+# Install some handy modules.  Feel free to remove some or add your own.
+
+echo "Adding additional Drupal projects to the site."
+
+dl_project admin_menu     # Administration drop down menu bar
+dl_project util           # Administration utilities
+dl_project devel          # Development utilities ( A developers best friend! )
+dl_project securepages    # Make some pages require HTTP requests
+dl_project securepages_prevent_hijack # Addon for securepages
+dl_project cck            # Allows for the building of custom content types
+dl_project link           # Link field for cck types
+dl_project filefield      # File uploads and downloads for cck types
+dl_project mimedetect     # Automatic mime detection of file uploads
+dl_project imagefield     # Image upload and display for cck types
+dl_project imagecache     # Image caching utility.  Very cool.
+dl_project imageapi       # Basic image handling utilities used by imagecache
+dl_project getid3         # Retrieve file attributes
+dl_project views          # Graphical query and aggregate display builder
+dl_project tvi            # Taxonomy views integration of term pages
+dl_project views_bulk_operations # Self explanatory.
+dl_project editablefields # Make content fields editable in views and node pages
+dl_project ajax_load      # AJAX loading utilities used by editablefields
+dl_project advanced_help  # Popup help windows that some modules use
+dl_project token          # Dynamic data injection utilities
+dl_project pathauto       # Dynamic path aliasing
+dl_project vertical_tabs  # Nice handling of fieldsets in content editing
+dl_project rootcandy      # A really great administration theme
+
+
+# Add some needed libraries.
+
+echo "Installing the getId3 library."
+
+mkdir -p sites/all/libraries/getid3 || exit 20
+cd sites/all/libraries/getid3 || exit 21
+wget "http://sourceforge.net/projects/getid3/files/getID3%28%29%201.x/1.7.9/getid3-1.7.9.zip/download" || exit 22
+unzip *.zip || exit 23
+rm -fR demos || exit 24
+rm *.zip || exit 25
+
+# Version changes!  Replace this with your own VCS if you wish.
+git add . || exit 26
+git commit -m "Adding the getID3 library." || exit 27
+
+
+# Do a little post processing.
+
+echo "Ready the settings.php file for Drupal site installation."
+
+sudo chmod g+s sites/default || exit 28
+mkdir sites/default/files
+
+if [ -f sites/default/default.settings.php ]
+then
+  cp -p sites/default/default.settings.php sites/default/settings.php || exit 30
+fi
+
+chmod ug+wx sites/default/settings.php || exit 31

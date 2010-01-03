@@ -256,7 +256,7 @@ git commit -m "Adding the getID3 library." || exit 27
 
 # Do a little post processing.
 
-echo "Ready the settings.php file for Drupal site installation."
+echo "Preparing the settings.php file for Drupal site installation."
 
 cd $SITE_DIR || exit 28
 
@@ -269,3 +269,5 @@ then
 fi
 
 chmod ug+wx sites/default/settings.php || exit 31
+
+echo "Drupal site installed successfully."

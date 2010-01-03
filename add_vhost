@@ -191,10 +191,6 @@ SSL_CRT="/etc/ssl/certs/$DOMAIN_NAME.crt"
 # Start
 
 
-# Test if user is authorized to run this script.
-sudo -v || exit 7
-
-
 if [ ! $GENERATE_UNSECURE ] && [ ! $GENERATE_SECURE ]
 then
   echo "No Apache vhost configurations generated."

@@ -74,6 +74,8 @@ do
     
 		ADMIN_EMAIL="$2"
     shift;;
+  esac
+	shift
 done
 
 
@@ -87,14 +89,14 @@ chmod 644 $INIT_DIR/*.*  # Non scripts should not be executable.
 
 
 # Save some handy environment variables
-echo "export PATH=\$PATH:\$HOME/site-admin" >> ~/.profile
+echo "export PATH=\$PATH:\$HOME/site-admin" >> ~/.profile || exit 1
 
 if [ $ADMIN_EMAIL ]
 then
-  echo "export WEBSERVER_ADMIN_EMAIL=$ADMIN_EMAIL" >> ~/.profile
+  echo "export WEBSERVER_ADMIN_EMAIL=$ADMIN_EMAIL" >> ~/.profile || exit 2
 fi
 
-source ~/.profile
+source ~/.profile || exit 3
 
 # This should be executed once.
 chmod 644 $INIT_DIR/init_site_admin

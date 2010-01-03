@@ -227,6 +227,8 @@ dl_project imagecache     # Image caching utility.  Very cool.
 dl_project imageapi       # Basic image handling utilities used by imagecache
 dl_project getid3         # Retrieve file attributes
 dl_project views          # Graphical query and aggregate display builder
+dl_project panels         # Content display library.
+dl_project ctools         # Miscelanious utilities by author of views and panels
 dl_project tvi            # Taxonomy views integration of term pages
 dl_project views_bulk_operations # Self explanatory.
 dl_project editablefields # Make content fields editable in views and node pages

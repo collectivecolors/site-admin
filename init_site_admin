@@ -1,0 +1,100 @@
+#!/bin/bash
+#-------------------------------------------------------------------------------
+#
+# init_site_admin
+#
+#-------------------------------------------------------------------------------
+# Properties
+
+HELP="
+The init_site_admin command initializes the site administration commands so they are easier to use in the system.
+
+Currently the initialization consists of:
+
+1. Setting execute permissions on all scripts in the admin package.
+
+2. Adding the site-admin scripts to the current users \$PATH, so we can access them from anywhere without needing to know the location.
+
+3. Setting an optional webmaster email address to be used in all virtual hosts created by this user.
+
+--------------------------------------------------------------------------------
+
+ Developed by Adrian Webb of http://collectivecolors.com
+ Licensed under GPL v2
+
+ See the project page at:  http://github.com/collectivecolors/site-admin
+ Report issues here:       http://github.com/collectivecolors/site-admin/issues
+ 
+--------------------------------------------------------------------------------
+"
+
+USAGE="
+usage: init_site_admin [ -h | --help ]                 # Show usage information
+                       ---------------------------------------------------------
+                       [ -e | --email <admin-email> ]  # Default administrator
+                                                       # email.
+"
+
+
+# Get the directory of this command.
+
+CMD_NAME=`basename $0`
+INIT_DIR=`which $CMD_NAME`
+  
+if [ ! "$INIT_DIR" ]
+then
+  cd `dirname $0`
+  INIT_DIR=`pwd`
+  
+else
+  INIT_DIR=`dirname $INIT_DIR`  
+fi  
+
+ADMIN_EMAIL=''
+
+
+# Parse parameters
+
+while test $# -ne 0
+do
+	case "$1" in
+	  
+  -h|--help)
+    echo "$HELP"
+    echo "$USAGE"
+    exit 0;;
+  
+	-e|--email)
+    if [ ! "$2" ]
+    then
+      echo "Email option requires an email address."
+      echo "$USAGE"
+      exit 3
+    fi
+    
+		ADMIN_EMAIL="$2"
+    shift;;
+done
+
+
+#-------------------------------------------------------------------------------
+# Start
+
+
+# Make all administration scripts executable
+chmod 744 $INIT_DIR/*
+chmod 644 $INIT_DIR/*.*  # Non scripts should not be executable.
+
+
+# Save some handy environment variables
+echo "export PATH=\$PATH:\$HOME/site-admin" >> ~/.profile
+
+if [ $ADMIN_EMAIL ]
+then
+  echo "export WEBSERVER_ADMIN_EMAIL=$ADMIN_EMAIL" >> ~/.profile
+fi
+
+source ~/.profile
+
+# This should be executed once.
+chmod 644 $INIT_DIR/init_site_admin

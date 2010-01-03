@@ -120,7 +120,7 @@ fi
 
 if [ $DOMAIN_NAME ]
 then
-  SITE_DIR="$HOME/sites/$DOMAIN_NAME"
+  SITE_DIR="$HOME/sites/$DOMAIN_NAME/www"
 else
   SITE_DIR="$1"
 fi
@@ -258,7 +258,9 @@ git commit -m "Adding the getID3 library." || exit 27
 
 echo "Ready the settings.php file for Drupal site installation."
 
-sudo chmod g+s sites/default || exit 28
+cd $SITE_DIR || exit 28
+
+sudo chmod g+s sites/default || exit 29
 mkdir sites/default/files
 
 if [ -f sites/default/default.settings.php ]

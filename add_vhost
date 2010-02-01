@@ -270,8 +270,10 @@ if [ $GENERATE_CERTIFICATE ]
 then
   # Generate self signed certificate ( to be replaced by one from a valid CA )
 
+  KEY_DATA=`openssl genrsa 1024`
+
   echo "Generating a SSL private key."
-  openssl genrsa 1024 | sudo tee $SSL_KEY > /dev/null || exit 18
+  echo "$KEY_DATA" | sudo tee $SSL_KEY > /dev/null || exit 18
 
   sudo chmod 400 $SSL_KEY || exit 19
 

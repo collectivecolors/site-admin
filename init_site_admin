@@ -89,14 +89,19 @@ chmod 644 $INIT_DIR/*.*  # Non scripts should not be executable.
 
 
 # Save some handy environment variables
-echo "export PATH=\$PATH:\$HOME/site-admin" >> ~/.profile || exit 1
+if ! grep -q "export PATH=\$PATH:\$HOME/site-admin" ~/.profile
+then
+  echo "export PATH=\$PATH:\$HOME/site-admin" >> ~/.profile || exit 1
+fi
 
 if [ $ADMIN_EMAIL ]
 then
-  echo "export WEBSERVER_ADMIN_EMAIL=$ADMIN_EMAIL" >> ~/.profile || exit 2
+  if ! grep -q "export WEBSERVER_ADMIN_EMAIL=" ~/.profile
+  then
+    echo "export WEBSERVER_ADMIN_EMAIL=$ADMIN_EMAIL" >> ~/.profile || exit 2
+  else
+    sed -i "s/WEBSERVER_ADMIN_EMAIL=.*/WEBSERVER_ADMIN_EMAIL=$ADMIN_EMAIL/g" ~/.profile
+  fi
 fi
 
 source ~/.profile || exit 3
-
-# This should be executed once.
-chmod 644 $INIT_DIR/init_site_admin

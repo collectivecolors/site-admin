@@ -102,6 +102,16 @@ then
   else
     sed -i "s/WEBSERVER_ADMIN_EMAIL=.*/WEBSERVER_ADMIN_EMAIL=$ADMIN_EMAIL/g" ~/.profile
   fi
+  
+  if ! git config --global user.name > /dev/null
+  then
+    git config --global user.name "Site Administrator"
+  fi
+  
+  if ! git config --global user.email > /dev/null
+  then
+    git config --global user.email $ADMIN_EMAIL
+  fi
 fi
 
 source ~/.profile || exit 3

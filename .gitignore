@@ -1,0 +1,6 @@
+# Ignore Eclipse project files.
+.project
+.buildpath
+.cache
+.settings
+

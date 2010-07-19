@@ -34,7 +34,7 @@ usage: add_site [ -h | --help ]                     # Show usage information
                 ----------------------------------------------------------------
                 [ -d | --domain <domain> ]          # Domain to use if this vhost is 
                                                     # in the following directory:
-                                                    # $HOME/sites/<domain>
+                                                    # $HOME/Sites/<domain>
                 ----------------------------------------------------------------
                 [ <dest-dir> ]                      # Directory to put the site into.
                                                     # If not specified and --domain option
@@ -124,7 +124,7 @@ fi
 
 if [ $DOMAIN_NAME ]
 then
-  SITE_DIR="$HOME/sites/$DOMAIN_NAME/www"
+  SITE_DIR="$HOME/Sites/$DOMAIN_NAME/www"
 else
   SITE_DIR="$1"
 fi

@@ -1,0 +1,81 @@
+#!/bin/bash
+
+#------------------
+# Local variables
+
+SITE="$1"
+MESSAGE="$2"
+USER="$3"
+
+if [ ! "$MESSAGE" ]
+then
+  MESSAGE="Database commit"
+fi
+
+if [ "$USER" ]
+then
+  HOMEDIR="/home/$USER"
+else
+  HOMEDIR="$HOME"
+fi
+
+WWWDIR="$HOMEDIR/Sites/$SITE/www"
+
+DBDIR="$HOMEDIR/Databases/Sites/$SITE"
+DBFILE="$DBDIR/db.sql"
+
+TIMESTAMP=`timestamp`
+
+#-----------------------------
+# Initialization information
+
+echo "Site path     : $WWWDIR"
+echo "Database file : $DBFILE"
+echo "----------------------------------------------------------"
+
+#--------------------
+# Command execution
+
+if [ "$SITE" -a -d "$WWWDIR" ]
+then
+  # Initialize the repository directory if it does not exist.
+  if [ ! -d "$DBDIR" ]
+  then
+    mkdir -p "$DBDIR"
+    echo "Repository directory $DBDIR created"
+    
+    cd "$DBDIR"
+    git init
+  fi
+  
+  # Dump the database to the dbrepo directory.
+  rm -f "$DBFILE"
+  
+  cd "$WWWDIR"  
+  drush cache clear
+  drush sql dump 1> "$DBFILE"
+  
+  echo "$SITE database dumped to $DBFILE"
+  echo "----------------------------------------------------------"
+  
+  # Copy site settings and files into repo.
+  
+  echo "Copying settings and files from $WWWDIR/sites/default to $DBDIR/default"
+  
+  rm -fR "$DBDIR/default"  
+  cp -R --preserve "$WWWDIR/sites/default" "$DBDIR/default"
+  
+  echo "Site settings and files copied."
+  echo "-----------------------------------------------------------"
+  
+  # Commit changes to the database into the repository.
+  
+  echo "Committing changes to the repository."
+  
+  cd "$DBDIR"
+  
+  git add .
+  git add -u
+  git commit -m "$TIMESTAMP - $MESSAGE"
+  git gc
+fi

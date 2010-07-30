@@ -34,13 +34,15 @@ echo "Site package  : $SITEFILE"
 
 if [ "$SITE" -a -d "$WWWDIR" ]
 then
+  mkdir -p "$PACKAGEDIR"
+  
   cp -R --preserve "$WWWDIR" "$TMPDIR"
   cd "$TMPDIR"
   
-  drush sql dump 1> "$DBFILE"
+  drush sql-dump 1> "$DBFILE"
   
-  mkdir -p "$PACKAGEDIR"
-  tar -cpzf "$SITEFILE" "$TMPDIR"
+  cd ..
+  tar -cpzf "$SITEFILE" "$SITE"
   
   rm -Rf "$TMPDIR"
 fi

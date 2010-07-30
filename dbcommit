@@ -52,8 +52,8 @@ then
   rm -f "$DBFILE"
   
   cd "$WWWDIR"  
-  drush cache clear
-  drush sql dump 1> "$DBFILE"
+  drush cache-clear all > /dev/null
+  drush sql-dump --ordered-dump 1> "$DBFILE"
   
   echo "$SITE database dumped to $DBFILE"
   echo "----------------------------------------------------------"

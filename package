@@ -1,0 +1,46 @@
+#!/bin/bash
+
+#------------------
+# Local variables
+
+SITE="$1"
+USER="$2"
+
+if [ $USER ]
+then
+  HOMEDIR="/home/$USER"
+else
+  HOMEDIR="$HOME"
+fi
+
+TIMESTAMP=`timestamp`
+
+WWWDIR="$HOMEDIR/Sites/$SITE/www"
+TMPDIR="/tmp/$SITE"
+PACKAGEDIR="$HOMEDIR/Packages/Sites/$SITE"
+
+DBFILE="db.sql"
+
+SITEFILE="$PACKAGEDIR/$SITE-$TIMESTAMP.tar.gz"
+
+#-----------------------------
+# Initialization information
+
+echo "Site path     : $WWWDIR"
+echo "Site package  : $SITEFILE"
+
+#--------------------
+# Command execution
+
+if [ "$SITE" -a -d "$WWWDIR" ]
+then
+  cp -R --preserve "$WWWDIR" "$TMPDIR"
+  cd "$TMPDIR"
+  
+  drush sql dump 1> "$DBFILE"
+  
+  mkdir -p "$PACKAGEDIR"
+  tar -cpzf "$SITEFILE" "$TMPDIR"
+  
+  rm -Rf "$TMPDIR"
+fi

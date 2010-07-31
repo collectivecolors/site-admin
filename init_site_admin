@@ -22,9 +22,9 @@ Currently the initialization consists of:
  Developed by Adrian Webb of http://collectivecolors.com
  Licensed under GPL v2
 
- See the project page at:  http://github.com/collectivecolors/site-admin
- Report issues here:       http://github.com/collectivecolors/site-admin/issues
- 
+ See the project page at:  http://github.com/collectivecolors/site-admin-desktop
+ Report issues here:       http://github.com/collectivecolors/site-admin-desktop/issues
+
 --------------------------------------------------------------------------------
 "
 
@@ -60,25 +60,25 @@ ADMIN_EMAIL=''
 
 while test $# -ne 0
 do
-	case "$1" in
-	  
+  case "$1" in
+
   -h|--help)
     echo "$HELP"
     echo "$USAGE"
     exit 0;;
-  
-	-e|--email)
+
+  -e|--email)
     if [ ! "$2" ]
     then
       echo "Email option requires an email address."
       echo "$USAGE"
       exit 3
     fi
-    
-		ADMIN_EMAIL="$2"
+
+    ADMIN_EMAIL="$2"
     shift;;
   esac
-	shift
+  shift
 done
 
 
@@ -105,12 +105,12 @@ then
   else
     sed -i "s/WEBSERVER_ADMIN_EMAIL=.*/WEBSERVER_ADMIN_EMAIL=$ADMIN_EMAIL/g" ~/.profile
   fi
-  
+
   if ! git config --global user.name > /dev/null
   then
     git config --global user.name "Site Administrator"
   fi
-  
+
   if ! git config --global user.email > /dev/null
   then
     git config --global user.email $ADMIN_EMAIL

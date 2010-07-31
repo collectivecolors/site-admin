@@ -20,9 +20,9 @@ directories.
  Developed by Adrian Webb of http://collectivecolors.com
  Licensed under GPL v2
 
- See the project page at:  http://github.com/collectivecolors/site-admin
- Report issues here:       http://github.com/collectivecolors/site-admin/issues
- 
+ See the project page at:  http://github.com/collectivecolors/site-admin-desktop
+ Report issues here:       http://github.com/collectivecolors/site-admin-desktop/issues
+
 --------------------------------------------------------------------------------
 "
 
@@ -49,7 +49,7 @@ usage: add_vhost [ -h | --help ]                 # Show usage information
                  ---------------------------------------------------------------
                  [ -p | --port <port> ]          # HTTP port for this host
                                                  # Defaults to port 80
-                 ---------------------------------------------------------------       
+                 ---------------------------------------------------------------
                  <domain>                        # Domain name for this host
 "
 
@@ -68,24 +68,24 @@ SECURE_PORT=443
 
 while test $# -ne 0
 do
-	case "$1" in
-	  
+  case "$1" in
+
   -h|--help)
     echo "$HELP"
     echo "$USAGE"
     exit 0;;
-  
-	-e|--email)
+
+  -e|--email)
     if [ ! "$2" ]
     then
       echo "Email option requires an email address."
       echo "$USAGE"
       exit 3
     fi
-    
-		ADMIN_EMAIL="$2"
+
+    ADMIN_EMAIL="$2"
     shift;;
-	
+
   -d|--dest)
     if [ ! "$2" ]
     then
@@ -93,10 +93,10 @@ do
       echo "$USAGE"
       exit 4
     fi
-    
-		DESTINATION="$2"
+
+    DESTINATION="$2"
     shift;;
-    
+
   -p|--port)
     if [ ! "$2" ]
     then
@@ -104,10 +104,10 @@ do
       echo "$USAGE"
       exit 5
     fi
-    
+
     UNSECURE_PORT="$2"
     shift;;
-    
+
   -o|--secure-port)
     if [ ! "$2" ]
     then
@@ -115,16 +115,16 @@ do
       echo "$USAGE"
       exit 6
     fi
-    
+
     SECURE_PORT="$2"
     shift;;
-    
+
   -u|--unsecure) GENERATE_SECURE='';;
-	-s|--secure) GENERATE_UNSECURE='';;
-  -n|--no-crt) GENERATE_CERTIFICATE='';;	
-	*) break;;
-	esac
-	shift
+  -s|--secure) GENERATE_UNSECURE='';;
+  -n|--no-crt) GENERATE_CERTIFICATE='';;
+  *) break;;
+  esac
+  shift
 done
 
 
@@ -235,7 +235,7 @@ UNSECURE_VHOST="<VirtualHost *:$UNSECURE_PORT>
 
   # Logging
 
-  # Possible values include: 
+  # Possible values include:
   #  [ debug | info | notice | warn | error | crit | alert | emerg ]
   LogLevel warn
   # RewriteLogLevel 9
@@ -301,7 +301,7 @@ SECURE_VHOST="<VirtualHost *:$SECURE_PORT>
 
   # Logging
 
-  # Possible values include: 
+  # Possible values include:
   #  [ debug | info | notice | warn | error | crit | alert | emerg ]
   LogLevel warn
   # RewriteLogLevel 9
@@ -322,7 +322,7 @@ SECURE_VHOST_NAME="<IfModule mod_ssl.c>
 </IfModule>"
 
 # TODO: Make this a better condition.  Will require multi line match, which
-#       is something that grep can't do. (At least to my knowledge)     
+#       is something that grep can't do. (At least to my knowledge)
 if ! grep -q "NameVirtualHost \*:$SECURE_PORT" /etc/apache2/apache2.conf
 then
   echo "Saving name virtual host to Apache configuration."

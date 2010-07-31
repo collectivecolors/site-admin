@@ -15,9 +15,9 @@ privileges to that user on the database created.
  Developed by Adrian Webb of http://collectivecolors.com
  Licensed under GPL v2
 
- See the project page at:  http://github.com/collectivecolors/site-admin
- Report issues here:       http://github.com/collectivecolors/site-admin/issues
- 
+ See the project page at:  http://github.com/collectivecolors/site-admin-desktop
+ Report issues here:       http://github.com/collectivecolors/site-admin-desktop/issues
+
 --------------------------------------------------------------------------------
 "
 
@@ -27,10 +27,10 @@ usage: add_db [ -h | --help ]             # Show usage information
               [ -r | --root <root-name> ] # Root database name (run as)
                                           # Defaults to "root"
               ------------------------------------------------------------------
-              <database>                  # Database name to create 
+              <database>                  # Database name to create
                                           # (must be 64 characters or less)
               ------------------------------------------------------------------
-              [ <db-user> ]               # User with all privileges on this database 
+              [ <db-user> ]               # User with all privileges on this database
                                           # (must be 16 characters or less)
                                           # Defaults to <database>
 "
@@ -42,27 +42,27 @@ ROOT_NAME='root'
 
 while test $# -ne 0
 do
-	case "$1" in
-	  
+  case "$1" in
+
   -h|--help)
     echo "$HELP"
     echo "$USAGE"
     exit 0;;
-  
-	-r|--root)
+
+  -r|--root)
     if [ ! "$2" ]
     then
       echo "Root name option requires the root database user name."
       echo "$USAGE"
       exit 1
     fi
-    
-		ROOT_NAME="$2"
+
+    ROOT_NAME="$2"
     shift;;
-	  
-	*) break;;
-	esac
-	shift
+
+  *) break;;
+  esac
+  shift
 done
 
 
@@ -76,7 +76,7 @@ then
   echo "Database name is required to setup the database."
   exit 2
 
-# MySQL only allows for a 64 character database name.  
+# MySQL only allows for a 64 character database name.
 elif [ ${DATABASE_NAME:0:64} != $DATABASE_NAME ]
 then
   echo "Database name must be 64 characters or less in length."
@@ -94,7 +94,7 @@ if [ ! $USER_NAME ]
 then
   USER_NAME=$DATABASE_NAME
 
-# MySQL only allows for a 16 character user name.  
+# MySQL only allows for a 16 character user name.
 elif [ ${USER_NAME:0:16} != $USER_NAME ]
 then
   echo "Database user name must be 16 characters or less in length."

@@ -16,9 +16,9 @@ This script is composed of the add_vhost, add_db, and add_site commands.  These 
  Developed by Adrian Webb of http://collectivecolors.com
  Licensed under GPL v2
 
- See the project page at:  http://github.com/collectivecolors/site-admin
- Report issues here:       http://github.com/collectivecolors/site-admin/issues
- 
+ See the project page at:  http://github.com/collectivecolors/site-admin-desktop
+ Report issues here:       http://github.com/collectivecolors/site-admin-desktop/issues
+
 --------------------------------------------------------------------------------
 "
 
@@ -46,16 +46,16 @@ usage: add_domain [ -h | --help ]                 # Show usage information
                   [ -r | --db-root <root-name> ]  # Root database name (run as)
                                                   # Defaults to "root"
                   --------------------------------------------------------------
-                  [ -d | --db-name <db-name> ]    # Database name to create 
+                  [ -d | --db-name <db-name> ]    # Database name to create
                                                   # (must be 64 characters or less)
                   --------------------------------------------------------------
-                  [ -z | --db-user <db-user> ]    # User with all privileges on this database 
+                  [ -z | --db-user <db-user> ]    # User with all privileges on this database
                                                   # (must be 16 characters or less)
                                                   # Defaults to <database>
                   --------------------------------------------------------------
                   [ -v | --version <drupal-version> ] # Drupal version (Ex: 6.14)
-                                                      # Defaults to current recommended 
-                  --------------------------------------------------------------       
+                                                      # Defaults to current recommended
+                  --------------------------------------------------------------
                   <domain>                        # Domain name for this site
 "
 
@@ -79,24 +79,24 @@ DRUPAL_VERSION=''
 
 while test $# -ne 0
 do
-	case "$1" in
-	  
+  case "$1" in
+
   -h|--help)
     echo "$HELP"
     echo "$USAGE"
     exit 0;;
-  
-	-e|--email)
+
+  -e|--email)
     if [ ! "$2" ]
     then
       echo "Email option requires an email address."
       echo "$USAGE"
       exit 1
     fi
-    
-		ADMIN_EMAIL="$2"
+
+    ADMIN_EMAIL="$2"
     shift;;
-	  
+
   -p|--port)
     if [ ! "$2" ]
     then
@@ -104,10 +104,10 @@ do
       echo "$USAGE"
       exit 2
     fi
-    
+
     UNSECURE_PORT="$2"
     shift;;
-    
+
   -o|--secure-port)
     if [ ! "$2" ]
     then
@@ -115,10 +115,10 @@ do
       echo "$USAGE"
       exit 3
     fi
-    
+
     SECURE_PORT="$2"
     shift;;
-  
+
   -r|--db-root)
     if [ ! "$2" ]
     then
@@ -126,10 +126,10 @@ do
       echo "$USAGE"
       exit 4
     fi
-    
+
     DB_ROOT_NAME="$2"
     shift;;
-    
+
   -a|--db-name)
     if [ ! "$2" ]
     then
@@ -137,10 +137,10 @@ do
       echo "$USAGE"
       exit 5
     fi
-    
+
     DB_NAME="$2"
     shift;;
-    
+
   -z|--db-user)
     if [ ! "$2" ]
     then
@@ -148,10 +148,10 @@ do
       echo "$USAGE"
       exit 6
     fi
-    
+
     DB_USER="$2"
-    shift;;	
-  
+    shift;;
+
   -v|--version)
     if [ ! "$2" ]
     then
@@ -159,16 +159,16 @@ do
       echo "$USAGE"
       exit 7
     fi
-    
-		DRUPAL_VERSION="$2"
+
+    DRUPAL_VERSION="$2"
     shift;;
-	    
+
   -u|--unsecure) GENERATE_SECURE='';;
-	-s|--secure) GENERATE_UNSECURE='';;
+  -s|--secure) GENERATE_UNSECURE='';;
   -n|--no-crt) GENERATE_CERTIFICATE='';;
   *) break;;
-	esac
-	shift
+  esac
+  shift
 done
 
 
@@ -207,7 +207,7 @@ if [ ! $DB_NAME ]
 then
   $DB_NAME=$DOMAIN_NAME
 fi
-# MySQL only allows for a 64 character database name.  
+# MySQL only allows for a 64 character database name.
 if [ ${DB_NAME:0:64} != $DB_NAME ]
 then
   echo "Database name must be 64 characters or less in length."
@@ -223,7 +223,7 @@ if [ ! $DB_USER ]
 then
   DB_USER=$DB_NAME
 
-# MySQL only allows for a 16 character user name.  
+# MySQL only allows for a 16 character user name.
 elif [ ${DB_USER:0:16} != $DB_USER ]
 then
   echo "Database user name must be 16 characters or less in length."

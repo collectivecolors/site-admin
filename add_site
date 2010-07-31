@@ -10,9 +10,9 @@ HELP="
 The add_site command creates and initializes a Drupal site.  Drupal modules that
 are commonly used (by collectivecolors) are also downloaded.
 
-You can specify which version of Drupal core you want, such as 6.14, or if you 
+You can specify which version of Drupal core you want, such as 6.14, or if you
 do not specify a version the current recommended release will be created.  You
-can also specify the target directory for the Drupal site.  If you do not 
+can also specify the target directory for the Drupal site.  If you do not
 specify this, then the site is installed to the current directory.
 
 --------------------------------------------------------------------------------
@@ -20,9 +20,9 @@ specify this, then the site is installed to the current directory.
  Developed by Adrian Webb of http://collectivecolors.com
  Licensed under GPL v2
 
- See the project page at:  http://github.com/collectivecolors/site-admin
- Report issues here:       http://github.com/collectivecolors/site-admin/issues
- 
+ See the project page at:  http://github.com/collectivecolors/site-admin-desktop
+ Report issues here:       http://github.com/collectivecolors/site-admin-desktop/issues
+
 --------------------------------------------------------------------------------
 "
 
@@ -32,16 +32,16 @@ usage: add_site [ -h | --help ]                     # Show usage information
                 [ -v | --version <drupal-version> ] # Drupal version (Ex: 6.14)
                                                     # Defaults to current recommended
                 ----------------------------------------------------------------
-                [ -d | --domain <domain> ]          # Domain to use if this vhost is 
+                [ -d | --domain <domain> ]          # Domain to use if this vhost is
                                                     # in the following directory:
                                                     # $HOME/Sites/<domain>
                 ----------------------------------------------------------------
                 [ <dest-dir> ]                      # Directory to put the site into.
                                                     # If not specified and --domain option
-                                                    # is not set, the current directory 
+                                                    # is not set, the current directory
                                                     # is used
 "
-                
+
 # Get the directory of this command.
 
 CMD_NAME=`basename $0`
@@ -69,38 +69,38 @@ DESTINATION=''
 
 while test $# -ne 0
 do
-	case "$1" in
-	  
+  case "$1" in
+
   -h|--help)
     echo "$HELP"
     echo "$USAGE"
     exit 0;;
-  
-	-v|--version)
+
+  -v|--version)
     if [ ! "$2" ]
     then
       echo "Drupal version option requires a version number (Ex: 6.14)."
       echo "$USAGE"
       exit 1
     fi
-    
-		DRUPAL_VERSION="$2"
+
+    DRUPAL_VERSION="$2"
     shift;;
-	
-	-d|--domain)
+
+  -d|--domain)
     if [ ! "$2" ]
     then
       echo "Domain option requires a domain name."
       echo "$USAGE"
       exit 2
     fi
-    
-		DOMAIN_NAME="$2"
+
+    DOMAIN_NAME="$2"
     shift;;
-	 
-	*) break;;
-	esac
-	shift
+
+  *) break;;
+  esac
+  shift
 done
 
 
@@ -112,7 +112,7 @@ then
   then
     echo "Version must be formatted with only numbers and dot separators."
     exit 3
-    
+
   else
     # Prepend a dash for easier injection.
     DRUPAL_VERSION="-$DRUPAL_VERSION"
@@ -137,7 +137,7 @@ if [ ! -d $SITE_DIR ]
 then
   mkdir -p $SITE_DIR || exit 4
 fi
- 
+
 #-------------------------------------------------------------------------------
 # Functions
 
@@ -146,9 +146,9 @@ fi
 #
 function dl_project() {
   local PROJECT_NAME="$1"
-  
+
   echo "Downloading project: $PROJECT_NAME"
-  
+
   # Download project.
   drush dl $PROJECT_NAME || exit 5
 
@@ -177,16 +177,16 @@ cd .sandbox || exit 10
 if [ ! -z "$DRUPAL_VERSION" ]
 then
   echo "Downloading Drupal core version $DRUPAL_VERSION."
-  
+
 else
   echo "Downloading the recommended version of Drupal core."
 fi
-    
+
 drush dl "drupal$DRUPAL_VERSION" || exit 11
 mv drupal-*/* .. || exit 12
 
 echo "Removing installation sandbox."
-  
+
 cd .. || exit 13
 rm -fR .sandbox || exit 14 # Cleanup after ourselves.
 
@@ -208,7 +208,7 @@ then
   exit 16
 fi
 
-git init || exit 17 
+git init || exit 17
 git add . || exit 18
 git commit -m "Initial commit of Drupal$DRUPAL_VERSION" || exit 19
 

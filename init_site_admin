@@ -29,10 +29,9 @@ Currently the initialization consists of:
 "
 
 USAGE="
-usage: init_site_admin [ -h | --help ]                 # Show usage information
+usage: init_site_admin [ --help ]                 # Show usage information
                        ---------------------------------------------------------
-                       [ -e | --email <admin-email> ]  # Default administrator
-                                                       # email.
+                       [ --email <admin-email> ]  # Default administrator email.
 "
 
 
@@ -62,12 +61,12 @@ while test $# -ne 0
 do
   case "$1" in
 
-  -h|--help)
+  --help)
     echo "$HELP"
     echo "$USAGE"
     exit 0;;
 
-  -e|--email)
+  --email)
     if [ ! "$2" ]
     then
       echo "Email option requires an email address."
@@ -90,14 +89,7 @@ done
 chmod 744 $INIT_DIR/*
 chmod 644 $INIT_DIR/*.*  # Non scripts should not be executable.
 
-
-# Save some handy environment variables
-if ! grep -q "export PATH=\$PATH:\$HOME/site-admin" ~/.profile
-then
-  echo "export PATH=\$PATH:\$HOME/site-admin" >> ~/.profile || exit 1
-fi
-
-if [ $ADMIN_EMAIL ]
+if [ "$ADMIN_EMAIL" ]
 then
   if ! grep -q "export WEBSERVER_ADMIN_EMAIL=" ~/.profile
   then
@@ -106,15 +98,12 @@ then
     sed -i "s/WEBSERVER_ADMIN_EMAIL=.*/WEBSERVER_ADMIN_EMAIL=$ADMIN_EMAIL/g" ~/.profile
   fi
 
-  if ! git config --global user.name > /dev/null
-  then
-    git config --global user.name "Site Administrator"
-  fi
-
-  if ! git config --global user.email > /dev/null
-  then
-    git config --global user.email $ADMIN_EMAIL
-  fi
+  git config --global user.name "$USER@$HOSTNAME"
+  git config --global user.email "$ADMIN_EMAIL"
 fi
 
-source ~/.profile || exit 3
+
+echo "Run: [ source ~/.profile ]"
+echo " |"
+echo "  \`- to finish the initialization."
+

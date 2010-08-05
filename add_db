@@ -22,10 +22,16 @@ privileges to that user on the database created.
 "
 
 USAGE="
-usage: add_db [ -h | --help ]             # Show usage information
+usage: add_db [ --help ]                  # Show usage information
               ------------------------------------------------------------------
-              [ -r | --root <root-name> ] # Root database name (run as)
+              [ --root <root-name> ]      # Root database name (run as)
                                           # Defaults to "root"
+              ------------------------------------------------------------------
+              [ --root-pass <password> ]  # Database root user password
+                                          # Prompt by default
+              ------------------------------------------------------------------
+              [ --db-pass <password> ]    # Database user password
+                                          # Prompt by default
               ------------------------------------------------------------------
               <database>                  # Database name to create
                                           # (must be 64 characters or less)
@@ -35,21 +41,30 @@ usage: add_db [ -h | --help ]             # Show usage information
                                           # Defaults to <database>
 "
 
+
+#-------------------------------------------------------------------------------
+# Initial parameters
+
 ROOT_NAME='root'
+ROOT_PASSWORD=''
+
+PASSWORD=''
+TEST_PASSWORD=''
 
 
+#-------------------------------------------------------------------------------
 # Parse parameters
 
 while test $# -ne 0
 do
   case "$1" in
 
-  -h|--help)
+  --help)
     echo "$HELP"
     echo "$USAGE"
     exit 0;;
 
-  -r|--root)
+  --root)
     if [ ! "$2" ]
     then
       echo "Root name option requires the root database user name."
@@ -60,15 +75,35 @@ do
     ROOT_NAME="$2"
     shift;;
 
+  --root-pass)
+    if [ ! "$2" ]
+    then
+      echo "Database root user password must be specified."
+      echo "$USAGE"
+      exit 2
+    fi
+
+    ROOT_PASSWORD="$2"
+    shift;;
+
+  --db-pass)
+    if [ ! "$2" ]
+    then
+      echo "Database user password must be specified."
+      echo "$USAGE"
+      exit 2
+    fi
+
+    PASSWORD="$2"
+    shift;;
+
   *) break;;
   esac
   shift
 done
 
 
-
 # Database
-
 DATABASE_NAME=$1
 
 if [ ! $DATABASE_NAME ]
@@ -85,9 +120,10 @@ fi
 
 DATABASE_NAME=${DATABASE_NAME//./_} # No dots
 
+#echo "$DATABASE_NAME"
+
 
 # User
-
 USER_NAME=$2
 
 if [ ! $USER_NAME ]
@@ -103,52 +139,56 @@ fi
 
 USER_NAME=${USER_NAME//./_} # No dots
 
+#echo "$USER_NAME"
+
 
 # Root password
-
-ROOT_PASSWORD=''
-
-echo -n "Enter $ROOT_NAME password: "
-read -s ROOT_PASSWORD
-echo ''
-
-if [ ! $ROOT_PASSWORD ]
+if [ ! "$ROOT_PASSWORD" ]
 then
-  echo "You must specify a valid $ROOT_NAME password to add this database and user."
-  exit 5
+  echo -n "Enter $ROOT_NAME password: "
+  read -s ROOT_PASSWORD
+  echo ''
+
+  if [ ! "$ROOT_PASSWORD" ]
+  then
+      echo "You must specify a valid $ROOT_NAME password to add this database and user."
+      exit 5
+  fi
 fi
+
+#echo "$ROOT_PASSWORD"
 
 
 # Password
-
-PASSWORD=''
-TEST_PASSWORD=''
-
-echo -n "New password for user: $USER_NAME: "
-read -s PASSWORD
-echo ''
-
-if [ ! $PASSWORD ]
+if [ ! "$PASSWORD" ]
 then
-  echo "You must specify a password for this database user."
-  exit 6
+  echo -n "New password for user: $USER_NAME: "
+  read -s PASSWORD
+  echo ''
+
+  if [ ! "$PASSWORD" ]
+  then
+      echo "You must specify a password for this database user."
+      exit 6
+  fi
+
+  echo -n "Retype password: "
+  read -s TEST_PASSWORD
+  echo ''
+
+  if [ ! "$TEST_PASSWORD" ]
+  then
+      echo "You must retype the password as you typed it originally to proceed."
+      exit 7
+
+  elif [ "$TEST_PASSWORD" != "$PASSWORD" ]
+  then
+      echo "Your original and retyped passwords do not match.  Please try again."
+      exit 8
+  fi
 fi
 
-echo -n "Retype password: "
-read -s TEST_PASSWORD
-echo ''
-
-if [ ! $TEST_PASSWORD ]
-then
-  echo "You must retype the password as you typed it originally to proceed."
-  exit 7
-
-elif [ $TEST_PASSWORD != $PASSWORD ]
-then
-  echo "Your original and retyped passwords do not match.  Please try again."
-  exit 8
-fi
-
+#echo "$PASSWORD"
 
 #-------------------------------------------------------------------------------
 # Start
@@ -159,6 +199,12 @@ mysql --user=$ROOT_NAME --password=$ROOT_PASSWORD <<EOQ
 
 # Create database user.
 
+# Shameful workaround for lack of DROP IF NOT EXISTS.
+GRANT USAGE ON *.* TO '$USER_NAME'@'localhost';
+GRANT USAGE ON *.* TO '$USER_NAME'@'%';
+DROP USER '$USER_NAME'@'localhost', '$USER_NAME'@'%';
+
+# This statement errors if there is already a user of that name without the above.
 CREATE USER '$USER_NAME'@'localhost' IDENTIFIED BY '$PASSWORD';
 CREATE USER '$USER_NAME'@'%' IDENTIFIED BY '$PASSWORD';
 
@@ -167,8 +213,7 @@ FLUSH PRIVILEGES;
 
 # Create database.
 
-CREATE DATABASE $DATABASE_NAME;
-
+CREATE DATABASE IF NOT EXISTS $DATABASE_NAME;
 
 # Assign all privileges to user on database.
 
@@ -180,11 +225,6 @@ EOQ
 
 [ $? != 0 ] && exit 9
 
+
 echo ''
-echo "You have successfully created a database:"
-echo ''
-echo "$DATABASE_NAME"
-echo ''
-echo "The following user now has full privileges on this database:"
-echo ''
-echo "$USER_NAME"
+echo "User [ $USER_NAME ] now has full privileges on the database: [ $DATABASE_NAME ]"

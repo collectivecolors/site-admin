@@ -1,0 +1,298 @@
+#!/bin/bash
+#-------------------------------------------------------------------------------
+#
+# update_domain <local-domain>
+#
+#-------------------------------------------------------------------------------
+# Properties
+
+HELP="
+The update command updates a local copy of a site from a given remote domain.
+
+--------------------------------------------------------------------------------
+
+ Developed by Adrian Webb of http://collectivecolors.com
+ Licensed under GPL v2
+
+ See the project page at:  http://github.com/collectivecolors/site-admin-desktop
+ Report issues here:       http://github.com/collectivecolors/site-admin-desktop/issues
+
+--------------------------------------------------------------------------------
+"
+
+USAGE="
+usage: update_domain [ --help ]                    # Show usage information
+                     -----------------------------------------------------------
+                     [ --remote <user@host> ]      # Remote user@host to connect to
+                                                   # Defaults to:> git config --file ~/.siteconfig <local-domain>.remotehost
+                     -----------------------------------------------------------
+                     [ --domain <remote-domain> ]  # Alternate remote domain name to use
+                                                   # Defaults to:> git config --file ~/.siteconfig <local-domain>.remotedomain
+                     -----------------------------------------------------------
+                     [ --db-name <db-name> ]       # Database name to create
+                                                   # (must be 64 characters or less)
+                                                   # Defaults to:> git config --file ~/.siteconfig <local-domain>.dbname
+                     -----------------------------------------------------------
+                     [ --db-user <db-user> ]       # User with all privileges on this database
+                                                   # (must be 16 characters or less)
+                                                   # Defaults to:> git config --file ~/.siteconfig <local-domain>.dbuser
+                     -----------------------------------------------------------
+                     [ --db-pass <password> ]      # Database user password
+                                                   # Defaults to:> git config --file ~/.siteconfig <local-domain>.dbpass
+                     -----------------------------------------------------------
+                     <local-domain>                # Local domain to update
+"
+
+
+#-------------------------------------------------------------------------------
+# Initial parameters
+
+# Settings
+USER_SETTINGS_FILE="$HOME/.siteconfig"
+
+
+#-------------------------------------------------------------------------------
+# Parse parameters
+
+while test $# -ne 0
+do
+  case "$1" in
+
+  --help)
+    echo "$HELP"
+    echo "$USAGE"
+    exit 0;;
+
+  --remote)
+    if [ ! "$2" ]
+    then
+      echo "Remote connection (user@host) required to update local repository."
+      echo "$USAGE"
+      exit 1
+    fi
+
+    REMOTE_HOST="$2"
+    shift;;
+
+  --domain)
+    if [ ! "$2" ]
+    then
+      echo "Remote domain is required to update local repository."
+      echo "$USAGE"
+      exit 2
+    fi
+
+    REMOTE_DOMAIN="$2"
+    shift;;
+
+  --db-name)
+    if [ ! "$2" ]
+    then
+      echo "Database name option requires a name of no more than 64 characters."
+      echo "$USAGE"
+      exit 3
+    fi
+
+    DB_NAME="$2"
+    shift;;
+
+  --db-user)
+    if [ ! "$2" ]
+    then
+      echo "Database user option requires a user name of no more than 16 characters."
+      echo "$USAGE"
+      exit 4
+    fi
+
+    DB_USER="$2"
+    shift;;
+
+  --db-pass)
+    if [ ! "$2" ]
+    then
+      echo "Database user password must be specified."
+      echo "$USAGE"
+      exit 5
+    fi
+
+    DB_PASS="$2"
+    shift;;
+
+  *) break;;
+  esac
+  shift
+done
+
+LOCAL_DOMAIN="$1"
+
+
+# Local domain
+if [ ! "$LOCAL_DOMAIN" ]
+then
+  echo "The local domain name is required to update a domain."
+  echo "$USAGE"
+  exit 6
+fi
+echo "$LOCAL_DOMAIN"
+
+SITE_KEY="${LOCAL_DOMAIN//./}" # No dots
+
+
+# Remote user@host
+if [ ! "$REMOTE_HOST" ]
+then
+  REMOTE_HOST=`git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.remotehost"`
+
+  if [ ! "$REMOTE_HOST" ]
+  then
+    echo "An accessible remote user@host is required to update a domain."
+    exit 7
+  fi
+
+else
+  git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.remotehost" "$REMOTE_HOST"
+fi
+echo "$REMOTE_HOST"
+
+
+# Remote domain
+if [ ! "$REMOTE_DOMAIN" ]
+then
+  REMOTE_DOMAIN=`git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.remotedomain"`
+
+  if [ ! "$REMOTE_DOMAIN" ]
+  then
+    echo "The remote domain name is required to update a domain."
+    exit 8
+  fi
+
+else
+  git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.remotedomain" "$REMOTE_DOMAIN"
+fi
+echo "$REMOTE_DOMAIN"
+
+
+# Database name
+if [ ! "$DB_NAME" ]
+then
+  DB_NAME=`git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbname"`
+
+  if [ ! "$DB_NAME" ]
+  then
+    echo "The local database name is required to update the domain."
+    exit 9
+  fi
+fi
+
+# MySQL only allows for a 64 character database name.
+if [ "${DB_NAME:0:64}" != "$DB_NAME" ]
+then
+  echo "Database name must be 64 characters or less in length."
+  exit 10
+fi
+
+git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbname" "$DB_NAME"
+
+echo "$DB_NAME"
+
+
+# Database user
+if [ ! "$DB_USER" ]
+then
+  DB_USER=`git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbuser"`
+
+  if [ ! "$DB_USER" ]
+  then
+    echo "The local database user is required to update the domain."
+    exit 11
+  fi
+fi
+
+# MySQL only allows for a 16 character user name.
+if [ "${DB_USER:0:16}" != "$DB_USER" ]
+then
+  echo "Database user name must be 16 characters or less in length."
+  exit 12
+fi
+
+git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbuser" "$DB_USER"
+
+echo "$DB_USER"
+
+
+
+# Database user password
+if [ ! "$DB_PASS" ]
+then
+  DB_PASS=`git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbpass"`
+
+  if [ ! "$DB_PASS" ]
+  then
+    echo -n "Enter $DB_USER password: "
+    read -s DB_PASS
+    echo ''
+
+    if [ ! "$DB_PASS" ]
+    then
+      echo "The local database user password is required to update the domain."
+      exit 13
+    fi
+  fi
+else
+  git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbpass" "$DB_PASS"
+fi
+echo "$DB_PASS"
+
+
+#-------------------------------------------------------------------------------
+# Variables
+
+# Directories
+DOMAIN_DIR="$HOME/Sites/$LOCAL_DOMAIN"
+
+SITE_DIR="$DOMAIN_DIR/www"
+DB_DIR="$DOMAIN_DIR/db"
+
+DB_FILES_DIR="$DB_DIR/default/files"
+SITE_FILES_DIR="$SITE_DIR/sites/default/files"
+
+# Database
+DB_FILE="$DB_DIR/db.sql"
+
+
+echo "-------------------------------------------------------------------------"
+echo ""
+echo -e " Fetching remote site.\n"
+
+cd "$SITE_DIR" || exit 14
+git pull origin master || exit 15
+
+
+echo "-------------------------------------------------------------------------"
+echo ""
+echo -e " Fetching remote database.\n"
+
+# Remote database.
+echo "Performing remote database commit for $REMOTE_DOMAIN at $REMOTE_HOST."
+ssh "$REMOTE_HOST" "dbcommit $REMOTE_DOMAIN 'Remote database backup for update by $USER@$HOSTNAME'" || exit 16
+
+# Local database.
+echo "Pulling remote database into: $DB_DIR."
+cd "$DB_DIR" || exit 17
+git pull origin master || exit 18
+
+
+echo "-------------------------------------------------------------------------"
+echo ""
+echo -e " Importing the site database and files.\n"
+
+# Database
+echo "Importing database $DB_FILE into $DB_NAME"
+mysql --user="$DB_USER" --password="$DB_PASS" "$DB_NAME" < "$DB_FILE" || exit 19
+
+# Files
+echo "Copying files from $DB_FILES_DIR to $SITE_FILES_DIR"
+cp -fR --preserve "$DB_FILES_DIR" "$SITE_FILES_DIR" || exit 20
+
+echo -e "\nSite $LOCAL_DOMAIN updated sucessfully.\n"
+

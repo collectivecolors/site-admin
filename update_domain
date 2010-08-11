@@ -133,7 +133,7 @@ then
   echo "$USAGE"
   exit 6
 fi
-echo "$LOCAL_DOMAIN"
+# echo "$LOCAL_DOMAIN"
 
 SITE_KEY="${LOCAL_DOMAIN//./}" # No dots
 
@@ -152,7 +152,7 @@ then
 else
   git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.remotehost" "$REMOTE_HOST"
 fi
-echo "$REMOTE_HOST"
+# echo "$REMOTE_HOST"
 
 
 # Remote domain
@@ -169,7 +169,7 @@ then
 else
   git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.remotedomain" "$REMOTE_DOMAIN"
 fi
-echo "$REMOTE_DOMAIN"
+# echo "$REMOTE_DOMAIN"
 
 
 # Database name
@@ -193,7 +193,7 @@ fi
 
 git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbname" "$DB_NAME"
 
-echo "$DB_NAME"
+# echo "$DB_NAME"
 
 
 # Database user
@@ -217,7 +217,7 @@ fi
 
 git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbuser" "$DB_USER"
 
-echo "$DB_USER"
+# echo "$DB_USER"
 
 
 
@@ -241,7 +241,7 @@ then
 else
   git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbpass" "$DB_PASS"
 fi
-echo "$DB_PASS"
+# echo "$DB_PASS"
 
 
 #-------------------------------------------------------------------------------

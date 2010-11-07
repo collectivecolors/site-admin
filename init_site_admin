@@ -11,11 +11,9 @@ The init_site_admin command initializes the site administration commands so they
 
 Currently the initialization consists of:
 
-1. Setting execute permissions on all scripts in the admin package.
+1. Adding the site-admin scripts to the current users \$PATH, so we can access them from anywhere without needing to know the location.
 
-2. Adding the site-admin scripts to the current users \$PATH, so we can access them from anywhere without needing to know the location.
-
-3. Setting an optional webmaster email address to be used in all virtual hosts created by this user.
+2. Setting an optional webmaster email address to be used in all virtual hosts created by this user.
 
 --------------------------------------------------------------------------------
 

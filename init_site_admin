@@ -85,10 +85,6 @@ done
 # Start
 
 
-# Make all administration scripts executable
-chmod 744 $INIT_DIR/*
-chmod 644 $INIT_DIR/*.*  # Non scripts should not be executable.
-
 if [ "$ADMIN_EMAIL" ]
 then
   if ! grep -q "export WEBSERVER_ADMIN_EMAIL=" ~/.profile

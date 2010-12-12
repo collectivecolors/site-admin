@@ -53,7 +53,7 @@ then
   
   cd "$WWWDIR"  
   drush cache-clear all > /dev/null
-  drush sql-dump --ordered-dump 1> "$DBFILE"
+  drush sql-dump --ordered-dump --result-file="$DBFILE"
   
   echo "$SITE database dumped to $DBFILE"
   echo "----------------------------------------------------------"

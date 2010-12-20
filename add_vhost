@@ -20,8 +20,8 @@ directories.
  Developed by Adrian Webb of http://collectivecolors.com
  Licensed under GPL v2
 
- See the project page at:  http://github.com/collectivecolors/site-admin-desktop
- Report issues here:       http://github.com/collectivecolors/site-admin-desktop/issues
+ See the project page at:  http://github.com/collectivecolors/site-admin
+ Report issues here:       http://github.com/collectivecolors/site-admin/issues
 
 --------------------------------------------------------------------------------
 "
@@ -33,7 +33,7 @@ usage: add_vhost [ --help ]                 # Show usage information
                                             # Defaults to value of global \$WEBSERVER_ADMIN_EMAIL
                  ---------------------------------------------------------------
                  [ --dest <dir> ]           # Destination directory
-                                            # Defaults to $HOME/Sites/<domain>
+                                            # Defaults to $HOME/sites/<domain>
                  ---------------------------------------------------------------
                  [ --secure ]               # Only generate HTTPS host
                                             # Both HTTP and HTTPS vhosts are genenerated by default
@@ -148,7 +148,7 @@ fi
 # Directories
 if [ ! "$DESTINATION" ]
 then
-  DESTINATION="$HOME/Sites/$DOMAIN_NAME"
+  DESTINATION="$HOME/sites/$DOMAIN_NAME"
 fi
 
 SITE_DIR="$DESTINATION/www"

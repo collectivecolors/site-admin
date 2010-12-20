@@ -19,9 +19,9 @@ else
   HOMEDIR="$HOME"
 fi
 
-WWWDIR="$HOMEDIR/Sites/$SITE/www"
+WWWDIR="$HOMEDIR/sites/$SITE/www"
 
-DBDIR="$HOMEDIR/Databases/Sites/$SITE"
+DBDIR="$HOMEDIR/db/sites/$SITE"
 DBFILE="$DBDIR/db.sql"
 
 TIMESTAMP=`timestamp`

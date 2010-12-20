@@ -20,26 +20,26 @@ specify this, then the site is installed to the current directory.
  Developed by Adrian Webb of http://collectivecolors.com
  Licensed under GPL v2
 
- See the project page at:  http://github.com/collectivecolors/site-admin-desktop
- Report issues here:       http://github.com/collectivecolors/site-admin-desktop/issues
+ See the project page at:  http://github.com/collectivecolors/site-admin
+ Report issues here:       http://github.com/collectivecolors/site-admin/issues
 
 --------------------------------------------------------------------------------
 "
 
 USAGE="
-usage: add_site [ -h | --help ]                     # Show usage information
+usage: add_site [ --help ]                     # Show usage information
                 ----------------------------------------------------------------
-                [ -v | --version <drupal-version> ] # Drupal version (Ex: 6.14)
-                                                    # Defaults to current recommended
+                [ --version <drupal-version> ] # Drupal version (Ex: 6.14)
+                                               # Defaults to current recommended
                 ----------------------------------------------------------------
-                [ -d | --domain <domain> ]          # Domain to use if this vhost is
-                                                    # in the following directory:
-                                                    # $HOME/Sites/<domain>
+                [ --domain <domain> ]          # Domain to use if this vhost is
+                                               # in the following directory:
+                                               # $HOME/sites/<domain>
                 ----------------------------------------------------------------
-                [ <dest-dir> ]                      # Directory to put the site into.
-                                                    # If not specified and --domain option
-                                                    # is not set, the current directory
-                                                    # is used
+                [ <dest-dir> ]                 # Directory to put the site into.
+                                               # If not specified and --domain option
+                                               # is not set, the current directory
+                                               # is used
 "
 
 # Get the directory of this command.
@@ -71,12 +71,12 @@ while test $# -ne 0
 do
   case "$1" in
 
-  -h|--help)
+  --help)
     echo "$HELP"
     echo "$USAGE"
     exit 0;;
 
-  -v|--version)
+  --version)
     if [ ! "$2" ]
     then
       echo "Drupal version option requires a version number (Ex: 6.14)."
@@ -87,7 +87,7 @@ do
     DRUPAL_VERSION="$2"
     shift;;
 
-  -d|--domain)
+  --domain)
     if [ ! "$2" ]
     then
       echo "Domain option requires a domain name."
@@ -124,7 +124,7 @@ fi
 
 if [ $DOMAIN_NAME ]
 then
-  SITE_DIR="$HOME/Sites/$DOMAIN_NAME/www"
+  SITE_DIR="$HOME/sites/$DOMAIN_NAME/www"
 else
   SITE_DIR="$1"
 fi

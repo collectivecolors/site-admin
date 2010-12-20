@@ -14,8 +14,8 @@ The migrate command creates a local copy of a site at a specified remote domain.
  Developed by Adrian Webb of http://collectivecolors.com
  Licensed under GPL v2
 
- See the project page at:  http://github.com/collectivecolors/site-admin-desktop
- Report issues here:       http://github.com/collectivecolors/site-admin-desktop/issues
+ See the project page at:  http://github.com/collectivecolors/site-admin
+ Report issues here:       http://github.com/collectivecolors/site-admin/issues
 
 --------------------------------------------------------------------------------
 "
@@ -345,7 +345,7 @@ else
 fi
 
 # Directories
-DOMAIN_DIR="$HOME/Sites/$LOCAL_DOMAIN"
+DOMAIN_DIR="$HOME/sites/$LOCAL_DOMAIN"
 
 SITE_DIR="$DOMAIN_DIR/www"
 DB_DIR="$DOMAIN_DIR/db"
@@ -354,7 +354,7 @@ DB_SETTINGS_DIR="$DB_DIR/default"
 SITE_SETTINGS_DIR="$SITE_DIR/sites/default"
 
 REMOTE_SITE_DIR="sites/$REMOTE_DOMAIN/www"
-REMOTE_DB_DIR="dbrepo/$REMOTE_DOMAIN"
+REMOTE_DB_DIR="db/sites/$REMOTE_DOMAIN"
 
 # Connection string
 CONNECTION_STR="$REMOTE_USER@$REMOTE_HOST"

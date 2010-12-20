@@ -14,8 +14,8 @@ The update command updates a local copy of a site from a given remote domain.
  Developed by Adrian Webb of http://collectivecolors.com
  Licensed under GPL v2
 
- See the project page at:  http://github.com/collectivecolors/site-admin-desktop
- Report issues here:       http://github.com/collectivecolors/site-admin-desktop/issues
+ See the project page at:  http://github.com/collectivecolors/site-admin
+ Report issues here:       http://github.com/collectivecolors/site-admin/issues
 
 --------------------------------------------------------------------------------
 "
@@ -248,7 +248,7 @@ fi
 # Variables
 
 # Directories
-DOMAIN_DIR="$HOME/Sites/$LOCAL_DOMAIN"
+DOMAIN_DIR="$HOME/sites/$LOCAL_DOMAIN"
 
 SITE_DIR="$DOMAIN_DIR/www"
 DB_DIR="$DOMAIN_DIR/db"

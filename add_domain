@@ -16,8 +16,8 @@ This script is composed of the add_vhost, add_db, and add_site commands.  These 
  Developed by Adrian Webb of http://collectivecolors.com
  Licensed under GPL v2
 
- See the project page at:  http://github.com/collectivecolors/site-admin-desktop
- Report issues here:       http://github.com/collectivecolors/site-admin-desktop/issues
+ See the project page at:  http://github.com/collectivecolors/site-admin
+ Report issues here:       http://github.com/collectivecolors/site-admin/issues
 
 --------------------------------------------------------------------------------
 "

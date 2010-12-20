@@ -248,7 +248,7 @@ fi
 # Variables
 
 # Directories
-DOMAIN_DIR="$HOME/sites/$LOCAL_DOMAIN"
+DOMAIN_DIR="$HOME/Sites/$LOCAL_DOMAIN"
 
 SITE_DIR="$DOMAIN_DIR/www"
 DB_DIR="$DOMAIN_DIR/db"

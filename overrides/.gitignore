@@ -1,0 +1,14 @@
+# Ignore data directory.
+sites/default
+
+# Eclipse project file.
+.buildpath
+.project
+.settings
+.cache
+
+# Ignore drush backups.
+backup
+
+# Ignore boost cache directory
+cache

@@ -445,6 +445,13 @@ echo -e " Fetching remote site.\n"
 # Clone site
 git clone "$CONNECTION_STR:$REMOTE_SITE_DIR" "$SITE_DIR" || exit 46
 
+cd "$SITE_DIR" || exit 47
+
+git submodule init || exit 48
+git submodule update || exit 49
+
+git submodule foreach git checkout master || exit 50
+
 
 echo "-------------------------------------------------------------------------"
 echo ""
@@ -452,10 +459,10 @@ echo -e " Fetching remote database.\n"
 
 # Remote database.
 echo "Performing remote database commit for $REMOTE_DOMAIN at $CONNECTION_STR."
-ssh "$CONNECTION_STR" "dbcommit $REMOTE_DOMAIN 'Remote database backup for migration by $USER@$HOSTNAME'" || exit 47
+ssh "$CONNECTION_STR" "dbcommit $REMOTE_DOMAIN 'Remote database backup for migration by $USER@$HOSTNAME'" || exit 51
 
 echo "Cloning remote database into: $DB_DIR."
-git clone "$CONNECTION_STR:$REMOTE_DB_DIR" "$DB_DIR" || exit 48
+git clone "$CONNECTION_STR:$REMOTE_DB_DIR" "$DB_DIR" || exit 52
 
 
 echo "-------------------------------------------------------------------------"
@@ -489,7 +496,7 @@ fi
 echo "Creating site database and database user for $LOCAL_DOMAIN"
 echo "  add_db $DB_ARGS"
 
-add_db $DB_ARGS || exit $((49 + $?))
+add_db $DB_ARGS || exit $((53 + $?)) # 9
 
 
 echo "-------------------------------------------------------------------------"
@@ -498,17 +505,17 @@ echo -e " Importing the site database and files.\n"
 
 # Database
 echo "Importing database $DB_FILE into $DB_NAME"
-mysql --user="$DB_USER" --password="$DB_PASS" "$DB_NAME" < "$DB_FILE" || exit 58
+mysql --user="$DB_USER" --password="$DB_PASS" "$DB_NAME" < "$DB_FILE" || exit 62
 
 # Files
 echo "Copying files from $DB_SETTINGS_DIR to $SITE_SETTINGS_DIR"
-cp -fR --preserve "$DB_SETTINGS_DIR" "$SITE_SETTINGS_DIR" || exit 59
-chmod 644 "$SITE_SETTINGS_FILE" || exit 60
-chmod 755 "$SITE_SETTINGS_DIR" || exit 61
+cp -fR --preserve "$DB_SETTINGS_DIR" "$SITE_SETTINGS_DIR" || exit 63
+chmod 644 "$SITE_SETTINGS_FILE" || exit 64
+chmod 755 "$SITE_SETTINGS_DIR" || exit 65
 
 # Set database to active database in site settings.php
 echo "Setting database connection string to: $DB_CONNECTION_STR"
-sed -i -r "s#^\\\$db_url\s*=\s*'mysqli?\:[^']+#\\\$db_url = '$DB_CONNECTION_STR#g" "$SITE_SETTINGS_FILE" || exit 62
+sed -i -r "s#^\\\$db_url\s*=\s*'mysqli?\:[^']+#\\\$db_url = '$DB_CONNECTION_STR#g" "$SITE_SETTINGS_FILE" || exit 66
 
 
 echo "-------------------------------------------------------------------------"
@@ -517,28 +524,28 @@ echo -e " Configuring cron.\n"
 
 # Get current crontab.
 echo "Pulling the current crontab into: $CRONTAB_BACKUP"
-crontab -l > "$CRONTAB_BACKUP" || exit 63
+crontab -l > "$CRONTAB_BACKUP" || exit 67
 
 # Check for PATH.  (dbcommit resides in: /usr/local/bin)
 if ! grep -q "PATH=" "$CRONTAB_BACKUP"
 then
   echo "Prepending PATH to user crontab."
-  echo "$CRONTAB_PATH\n\n" | cat - "$CRONTAB_BACKUP" > "$CRONTAB_BACKUP.tmp" && mv "$CRONTAB_BACKUP.tmp" "$CRONTAB_BACKUP" || exit 64
-  rm -f "$CRONTAB_BACKUP.tmp" || exit 65
+  echo "$CRONTAB_PATH\n\n" | cat - "$CRONTAB_BACKUP" > "$CRONTAB_BACKUP.tmp" && mv "$CRONTAB_BACKUP.tmp" "$CRONTAB_BACKUP" || exit 68
+  rm -f "$CRONTAB_BACKUP.tmp" || exit 69
 fi
 
-echo "" >> "$CRONTAB_BACKUP" || exit 66
+echo "" >> "$CRONTAB_BACKUP" || exit 70
 
 # Add site cronjob.
 if ! grep -q "$CRONTAB_SITE_TASK" "$CRONTAB_BACKUP"
 then
-  echo "$CRON_SITE * * * * $CRONTAB_SITE_TASK" >> "$CRONTAB_BACKUP" || exit 67
+  echo "$CRON_SITE * * * * $CRONTAB_SITE_TASK" >> "$CRONTAB_BACKUP" || exit 71
 fi
 
 # Add db cronjob.
 if ! grep -q "$CRONTAB_DB_TASK" "$CRONTAB_BACKUP"
 then
-  echo "$CRON_DB * * * * $CRONTAB_DB_TASK" >> "$CRONTAB_BACKUP" || exit 68
+  echo "$CRON_DB * * * * $CRONTAB_DB_TASK" >> "$CRONTAB_BACKUP" || exit 72
 fi
 
 echo " New crontab:"
@@ -547,8 +554,8 @@ echo -e "\n\n"
 
 # Set new crontab.
 echo "Setting user crontab."
-crontab "$CRONTAB_BACKUP" || exit 69
-rm -f "$CRONTAB_BACKUP" || exit 70
+crontab "$CRONTAB_BACKUP" || exit 73
+rm -f "$CRONTAB_BACKUP" || exit 74
 
 
 

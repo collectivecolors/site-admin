@@ -33,7 +33,7 @@ usage: add_vhost [ --help ]                 # Show usage information
                                             # Defaults to value of global \$WEBSERVER_ADMIN_EMAIL
                  ---------------------------------------------------------------
                  [ --dest <dir> ]           # Destination directory
-                                            # Defaults to $HOME/sites/<domain>
+                                            # Defaults to $HOME/Sites/<domain>
                  ---------------------------------------------------------------
                  [ --secure ]               # Only generate HTTPS host
                                             # Both HTTP and HTTPS vhosts are genenerated by default
@@ -148,7 +148,7 @@ fi
 # Directories
 if [ ! "$DESTINATION" ]
 then
-  DESTINATION="$HOME/sites/$DOMAIN_NAME"
+  DESTINATION="$HOME/Sites/$DOMAIN_NAME"
 fi
 
 SITE_DIR="$DESTINATION/www"

@@ -15,9 +15,9 @@ fi
 
 TIMESTAMP=`timestamp`
 
-WWWDIR="$HOMEDIR/sites/$SITE/www"
+WWWDIR="$HOMEDIR/Sites/$SITE/www"
 TMPDIR="/tmp/$SITE"
-PACKAGEDIR="$HOMEDIR/packages/sites/$SITE"
+PACKAGEDIR="$HOMEDIR/Packages/sites/$SITE"
 
 DBFILE="db.sql"
 

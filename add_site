@@ -66,9 +66,9 @@ usage: add_site [ --help ]                             # Show usage information
                                                        # This file is basically a .gitmodules file.
                                                        # Defaults to $OVERRIDE_DIR/.gitmodules
                 ----------------------------------------------------------------
-                [ --domain <domain> ]                  # Domain to use if this vhost is 
+                [ --domain <domain> ]                  # Domain to use if this vhost is
                                                        # in the following directory:
-                                                       # $HOME/sites/<domain>
+                                                       # $HOME/Sites/<domain>
                 ----------------------------------------------------------------
                 [ <dest-dir> ]                         # Directory to put the site into.
                                                        # If not specified and --domain option
@@ -144,7 +144,7 @@ done
 
 if [ $DOMAIN_NAME ]
 then
-  SITE_DIR="$HOME/sites/$DOMAIN_NAME/www"
+  SITE_DIR="$HOME/Sites/$DOMAIN_NAME/www"
 else
   SITE_DIR="$1"
 fi

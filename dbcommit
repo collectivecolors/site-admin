@@ -1,69 +1,190 @@
 #!/bin/bash
+#-------------------------------------------------------------------------------
+#
+# dbcommit
+#
+#-------------------------------------------------------------------------------
+# Properties
 
-#------------------
-# Local variables
 
-SITE="$1"
-MESSAGE="$2"
-USER="$3"
+HELP="
+The dbcommit command efficiently backs up Drupal site data.
 
-if [ ! "$MESSAGE" ]
+WARNING: This script has only been tested with 10.04 LTS.
+
+--------------------------------------------------------------------------------
+
+ Developed by Adrian Webb of http://collectivecolors.com
+ Licensed under GPL v2
+
+ See the project page at:  http://github.com/collectivecolors/site-admin
+ Report issues here:       http://github.com/collectivecolors/site-admin/issues
+ 
+--------------------------------------------------------------------------------
+"
+
+USAGE="
+usage: dbcommit [ -h | --help ]                      # Show usage information
+                ----------------------------------------------------------------
+                [ -m | --message <message> ]         # Commit message for this database commit.
+                ----------------------------------------------------------------
+                [ -u | --user <os-username> ]        # OS username to select home directory for ~/Sites.
+                ----------------------------------------------------------------
+                [ -w | --web-dir <web-dir> ]         # Document root of the Drupal site.
+                ----------------------------------------------------------------
+                [ -d | --db-dir <db-dir> ]           # Database backup directory.
+                ----------------------------------------------------------------
+                [ -f | --db-filename <db-filename> ] # Database schema file within database directory.
+                ----------------------------------------------------------------
+                <drupal-site>                        # Drupal site within $HOME/Sites directory.
+                ----------------------------------------------------------------
+                [ <message> ]                        # Commit message (DEPRECIATED - USE -m|--message).
+                ----------------------------------------------------------------
+                [ <os-username> ]                    # Home directory user (DEPRECIATED - USE -u|--user).
+"
+
+
+#-------------------------------------------------------------------------------
+# Variables
+
+# Import shared utilities.
+source common_utils || exit 1
+
+$INIT_DIR=`get_command_location $0`
+
+# echo "$COMMON_DIR"
+# echo "$SHARED_LIB_DIR"
+# echo "$SHARED_LIB_BIN"
+# echo "$SCRIPT_EXT"
+# echo "$PUBLIC_EXT"
+
+
+#-------------------------------------------------------------------------------
+# Parameters
+
+
+# Default parameters.
+PARAMS=`normalize_params "$@"`
+
+HELP_WANTED=''
+COMMIT_MESSAGE=''
+OS_USER=''
+
+WWW_DIR=''
+DB_DIR=''
+DB_FILENAME=''
+DB_FILE=''
+
+TIMESTAMP=`timestamp`
+
+# Parse any options and flags.
+parse_flag '-h|--help' HELP_WANTED || exit 2
+parse_option '-m|--message' COMMIT_MESSAGE '' 'Commit message must be specified.' || exit 3
+parse_option '-u|--user' OS_USER '' 'Valid operating system user must be specified.' || exit 4
+parse_option '-w|--web-dir' WWW_DIR 'validate_directory' 'Existing Drupal document root must be specified.' || exit 5
+parse_option '-d|--db-dir' DB_DIR '' 'Database directory must be specified.' || exit 6
+parse_option '-f|--db-filename' DB_FILENAME '' 'Database schema filename must be specified.' || exit 7
+
+# Reassign parameters.
+set -- $PARAMS
+
+# Standard help message.
+if [ "$HELP_WANTED" ]
 then
-  MESSAGE="Database commit"
+    echo "$HELP"
+    echo "$USAGE"
+    exit 0  
 fi
 
-if [ "$USER" ]
+# Parse arguments.
+
+SITE="$1"
+
+if [ ! "$SITE" ]
 then
-  HOMEDIR="/home/$USER"
+	echo "Existing Drupal site required to perform database commits."
+	exit 8
+fi
+
+if [ "$2" ]
+then
+	COMMIT_MESSAGE="$2"
+fi
+if [ ! "$COMMIT_MESSAGE" ]
+then
+	COMMIT_MESSAGE="Database commit."
+fi
+
+if [ "$3" ]
+then
+	OS_USER="$3"
+fi
+if [ "$OS_USER" ]
+then
+	HOMEDIR="/home/$OS_USER"
 else
   HOMEDIR="$HOME"
 fi
 
-WWWDIR="$HOMEDIR/Sites/$SITE/www"
+if [ ! "$WWW_DIR" ]
+then
+	WWW_DIR="$HOMEDIR/Sites/$SITE/www"
+fi 
 
-DBDIR="$HOMEDIR/Database/sites/$SITE"
-DBFILE="$DBDIR/db.sql"
+if [ ! "$DB_DIR" ]
+then
+	DB_DIR="$HOMEDIR/Database/sites/$SITE"
+fi
 
-TIMESTAMP=`timestamp`
+if [ ! "$DB_FILENAME" ]
+then
+	DB_FILENAME="db.sql"
+fi
+
+DB_FILE="$DB_DIR/$DB_FILENAME"
+
+
+#-------------------------------------------------------------------------------
+# Start
 
 #-----------------------------
 # Initialization information
 
-echo "Site path     : $WWWDIR"
-echo "Database file : $DBFILE"
+echo "Site path     : $WWW_DIR"
+echo "Database file : $DB_FILE"
 echo "----------------------------------------------------------"
 
 #--------------------
 # Command execution
 
-if [ "$SITE" -a -d "$WWWDIR" ]
+if [ "$SITE" -a -d "$WWW_DIR" ]
 then
   # Initialize the repository directory if it does not exist.
-  if [ ! -d "$DBDIR" ]
+  if [ ! -d "$DB_DIR" ]
   then
-    mkdir -p "$DBDIR"
-    echo "Repository directory $DBDIR created"
+    mkdir -p "$DB_DIR"
+    echo "Repository directory $DB_DIR created"
     
-    cd "$DBDIR"
+    cd "$DB_DIR"
     git init
   fi
   
   # Dump the database to the dbrepo directory.
-  rm -f "$DBFILE"
+  rm -f "$DB_FILE"
   
-  cd "$WWWDIR"  
+  cd "$WWW_DIR"  
   drush cache-clear all > /dev/null
-  drush sql-dump --ordered-dump --result-file="$DBFILE"
+  drush sql-dump --ordered-dump --result-file="$DB_FILE"
   
-  echo "$SITE database dumped to $DBFILE"
+  echo "$SITE database dumped to $DB_FILE"
   echo "----------------------------------------------------------"
   
   # Copy site settings and files into repo.
   
-  echo "Copying settings and files from $WWWDIR/sites/default to $DBDIR/default"
+  echo "Copying settings and files from $WWW_DIR/sites/default to $DB_DIR/default"
   
-  rm -fR "$DBDIR/default"  
-  cp -R --preserve "$WWWDIR/sites/default" "$DBDIR/default"
+  rm -fR "$DB_DIR/default"  
+  cp -R --preserve "$WWW_DIR/sites/default" "$DB_DIR/default"
   
   echo "Site settings and files copied."
   echo "-----------------------------------------------------------"
@@ -72,10 +193,10 @@ then
   
   echo "Committing changes to the repository."
   
-  cd "$DBDIR"
+  cd "$DB_DIR"
   
   git add .
   git add -u
-  git commit -m "$TIMESTAMP - $MESSAGE"
+  git commit -m "$TIMESTAMP - $COMMIT_MESSAGE"
   git gc
 fi

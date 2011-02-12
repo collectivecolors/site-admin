@@ -52,11 +52,11 @@ source common_utils || exit 1
 
 INIT_DIR=`get_command_location $0`
 
-# echo "$COMMON_DIR"
-# echo "$SHARED_LIB_DIR"
-# echo "$SHARED_LIB_BIN"
-# echo "$SCRIPT_EXT"
-# echo "$PUBLIC_EXT"
+# echo "COMMON_DIR = $COMMON_DIR"
+# echo "SHARED_LIB_DIR = $SHARED_LIB_DIR"
+# echo "SHARED_LIB_BIN = $SHARED_LIB_BIN"
+# echo "SCRIPT_EXT = $SCRIPT_EXT"
+# echo "PUBLIC_EXT = $PUBLIC_EXT"
 
 
 #-------------------------------------------------------------------------------
@@ -88,6 +88,8 @@ parse_option '-f|--db-filename' DB_FILENAME '' 'Database schema filename must be
 # Reassign parameters.
 set -- $PARAMS
 
+# echo "PARAMS = $PARAMS"
+
 # Standard help message.
 if [ "$HELP_WANTED" ]
 then
@@ -114,34 +116,42 @@ if [ ! "$COMMIT_MESSAGE" ]
 then
 	COMMIT_MESSAGE="Database commit."
 fi
+# echo "COMMIT_MESSAGE = $COMMIT_MESSAGE"
 
 if [ "$3" ]
 then
 	OS_USER="$3"
 fi
+# echo "OS_USER = $OS_USER"
+
 if [ "$OS_USER" ]
 then
 	HOMEDIR="/home/$OS_USER"
 else
   HOMEDIR="$HOME"
 fi
+# echo "HOMEDIR = $HOMEDIR"
 
 if [ ! "$WWW_DIR" ]
 then
 	WWW_DIR="$HOMEDIR/Sites/$SITE/www"
-fi 
+fi
+# echo "WWW_DIR = $WWW_DIR"
 
 if [ ! "$DB_DIR" ]
 then
 	DB_DIR="$HOMEDIR/Database/sites/$SITE"
 fi
+# echo "DB_DIR = $DB_DIR"
 
 if [ ! "$DB_FILENAME" ]
 then
 	DB_FILENAME="db.sql"
 fi
+# echo "DB_FILENAME = $DB_FILENAME"
 
 DB_FILE="$DB_DIR/$DB_FILENAME"
+# echo "DB_FILE = $DB_FILE"
 
 
 #-------------------------------------------------------------------------------

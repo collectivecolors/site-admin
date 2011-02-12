@@ -40,6 +40,12 @@ usage: update_domain [ --help ]                    # Show usage information
                      [ --db-pass <password> ]      # Database user password
                                                    # Defaults to:> git config --file ~/.siteconfig <local-domain>.dbpass
                      -----------------------------------------------------------
+                     [ --site-branch <branch> ]    # Site branch name
+                                                   # Defaults to:> git config --file ~/.siteconfig <local-domain>.sitebranch
+                     -----------------------------------------------------------
+                     [ --db-branch <branch> ]      # Database branch name
+                                                   # Defaults to:> git config --file ~/.siteconfig <local-domain>.dbbranch
+                     -----------------------------------------------------------
                      <local-domain>                # Local domain to update
 "
 
@@ -118,6 +124,28 @@ do
     DB_PASS="$2"
     shift;;
 
+  --site-branch)
+    if [ ! "$2" ]
+    then
+      echo "Site branch must be specified."
+      echo "$USAGE"
+      exit 6
+    fi
+
+    SITE_BRANCH="$2"
+    shift;;
+
+  --db-branch)
+    if [ ! "$2" ]
+    then
+      echo "Database branch must be specified."
+      echo "$USAGE"
+      exit 7
+    fi
+
+    DB_BRANCH="$2"
+    shift;;
+
   *) break;;
   esac
   shift
@@ -131,7 +159,7 @@ if [ ! "$LOCAL_DOMAIN" ]
 then
   echo "The local domain name is required to update a domain."
   echo "$USAGE"
-  exit 6
+  exit 8
 fi
 # echo "$LOCAL_DOMAIN"
 
@@ -146,7 +174,7 @@ then
   if [ ! "$REMOTE_HOST" ]
   then
     echo "An accessible remote user@host is required to update a domain."
-    exit 7
+    exit 9
   fi
 
 else
@@ -163,7 +191,7 @@ then
   if [ ! "$REMOTE_DOMAIN" ]
   then
     echo "The remote domain name is required to update a domain."
-    exit 8
+    exit 10
   fi
 
 else
@@ -180,7 +208,7 @@ then
   if [ ! "$DB_NAME" ]
   then
     echo "The local database name is required to update the domain."
-    exit 9
+    exit 11
   fi
 fi
 
@@ -188,7 +216,7 @@ fi
 if [ "${DB_NAME:0:64}" != "$DB_NAME" ]
 then
   echo "Database name must be 64 characters or less in length."
-  exit 10
+  exit 12
 fi
 
 git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbname" "$DB_NAME"
@@ -204,7 +232,7 @@ then
   if [ ! "$DB_USER" ]
   then
     echo "The local database user is required to update the domain."
-    exit 11
+    exit 13
   fi
 fi
 
@@ -212,7 +240,7 @@ fi
 if [ "${DB_USER:0:16}" != "$DB_USER" ]
 then
   echo "Database user name must be 16 characters or less in length."
-  exit 12
+  exit 14
 fi
 
 git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbuser" "$DB_USER"
@@ -235,13 +263,45 @@ then
     if [ ! "$DB_PASS" ]
     then
       echo "The local database user password is required to update the domain."
-      exit 13
+      exit 15
     fi
   fi
 else
   git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbpass" "$DB_PASS"
 fi
 # echo "$DB_PASS"
+
+
+# Site branch
+if [ ! "$SITE_BRANCH" ]
+then
+  SITE_BRANCH=`git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.sitebranch"`
+
+  if [ ! "$SITE_BRANCH" ]
+  then
+    SITE_BRANCH='master'
+  fi
+
+else
+  git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.sitebranch" "$SITE_BRANCH"
+fi
+# echo "$SITE_BRANCH"
+
+
+# Database branch
+if [ ! "$DB_BRANCH" ]
+then
+  DB_BRANCH=`git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbbranch"`
+
+  if [ ! "$DB_BRANCH" ]
+  then
+    DB_BRANCH='master'
+  fi
+
+else
+  git config --file "$USER_SETTINGS_FILE" "$SITE_KEY.dbbranch" "$DB_BRANCH"
+fi
+# echo "$DB_BRANCH"
 
 
 #-------------------------------------------------------------------------------
@@ -264,15 +324,16 @@ echo "-------------------------------------------------------------------------"
 echo ""
 echo -e " Fetching remote site.\n"
 
-cd "$SITE_DIR" || exit 14
-git pull origin master || exit 15
+cd "$SITE_DIR" || exit 16
+git pull origin "$SITE_BRANCH" || exit 17
+git checkout "$SITE_BRANCH" || exit 18
 
 if [ -f .gitmodules ]
 then
-  git submodule init || exit 16
-  git submodule update || exit 17
+  git submodule init || exit 19
+  git submodule update || exit 20
 
-  git submodule foreach git checkout master || exit 18
+  git submodule foreach git checkout master || exit 21
 fi
 
 echo "-------------------------------------------------------------------------"
@@ -281,12 +342,13 @@ echo -e " Fetching remote database.\n"
 
 # Remote database.
 echo "Performing remote database commit for $REMOTE_DOMAIN at $REMOTE_HOST."
-ssh "$REMOTE_HOST" "dbcommit $REMOTE_DOMAIN 'Remote database backup for update by $USER@$HOSTNAME'" || exit 19
+ssh "$REMOTE_HOST" "dbcommit $REMOTE_DOMAIN 'Remote database backup for update by $USER@$HOSTNAME'" || exit 22
 
 # Local database.
 echo "Pulling remote database into: $DB_DIR."
-cd "$DB_DIR" || exit 20
-git pull origin master || exit 21
+cd "$DB_DIR" || exit 23
+git pull origin "$DB_BRANCH" || exit 24
+git checkout "$DB_BRANCH" || exit 25
 
 
 echo "-------------------------------------------------------------------------"
@@ -295,11 +357,11 @@ echo -e " Importing the site database and files.\n"
 
 # Database
 echo "Importing database $DB_FILE into $DB_NAME"
-mysql --user="$DB_USER" --password="$DB_PASS" "$DB_NAME" < "$DB_FILE" || exit 22
+mysql --user="$DB_USER" --password="$DB_PASS" "$DB_NAME" < "$DB_FILE" || exit 26
 
 # Files
 echo "Copying files from $DB_FILES_DIR to $SITE_FILES_DIR"
-cp -fR --preserve "$DB_FILES_DIR" "$SITE_FILES_DIR" || exit 23
+cp -fR --preserve "$DB_FILES_DIR" "$SITE_FILES_DIR" || exit 27
 
 echo -e "\nSite $LOCAL_DOMAIN updated sucessfully.\n"
 

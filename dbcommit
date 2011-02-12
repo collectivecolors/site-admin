@@ -50,7 +50,7 @@ usage: dbcommit [ -h | --help ]                      # Show usage information
 # Import shared utilities.
 source common_utils || exit 1
 
-$INIT_DIR=`get_command_location $0`
+INIT_DIR=`get_command_location $0`
 
 # echo "$COMMON_DIR"
 # echo "$SHARED_LIB_DIR"

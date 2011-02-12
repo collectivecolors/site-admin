@@ -331,9 +331,9 @@ git checkout "$SITE_BRANCH" || exit 18
 if [ -f .gitmodules ]
 then
   git submodule init || exit 19
-  git submodule update || exit 20
+  git submodule update --recursive --init || exit 20
 
-  git submodule foreach git checkout master || exit 21
+  git submodule foreach --recursive git checkout master || exit 21
 fi
 
 echo "-------------------------------------------------------------------------"

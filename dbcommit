@@ -47,6 +47,8 @@ usage: dbcommit [ -h | --help ]                      # Show usage information
 #-------------------------------------------------------------------------------
 # Variables
 
+IFS_ORIG="$IFS"
+
 # Import shared utilities.
 source common_utils || exit 1
 
@@ -89,7 +91,9 @@ parse_option '-d|--db-dir' DB_DIR '' 'Database directory must be specified.' || 
 parse_option '-f|--db-filename' DB_FILENAME '' 'Database schema filename must be specified.' || exit 7
 
 # Reassign parameters.
+IFS='\n'
 set -- $PARAMS
+IFS="$IFS_ORIG"
 
 # echo "PARAMS = $PARAMS"
 # echo "FIRST = $1"

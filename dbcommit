@@ -47,6 +47,8 @@ usage: dbcommit [ -h | --help ]                      # Show usage information
 #-------------------------------------------------------------------------------
 # Variables
 
+IFS_ORIG="$IFS"
+
 # Import shared utilities.
 source common_utils || exit 1
 
@@ -66,12 +68,8 @@ INIT_DIR=`get_command_location $0`
 
 # Default parameters.
 PARAMS=`normalize_params "$@"`
-
 # echo "PARAMS = $PARAMS"
-# echo "FIRST = $1"
-# echo "SECOND = $2"
-# echo "THIRD = $3"
-# echo "FOURTH = $4"
+
 
 HELP_WANTED=''
 COMMIT_MESSAGE=''
@@ -93,13 +91,14 @@ parse_option '-d|--db-dir' DB_DIR '' 'Database directory must be specified.' || 
 parse_option '-f|--db-filename' DB_FILENAME '' 'Database schema filename must be specified.' || exit 7
 
 # Reassign parameters.
+IFS='\n'
 set -- $PARAMS
+IFS="$IFS_ORIG"
 
 # echo "PARAMS = $PARAMS"
 # echo "FIRST = $1"
 # echo "SECOND = $2"
 # echo "THIRD = $3"
-# echo "FOURTH = $4"
 
 # Standard help message.
 if [ "$HELP_WANTED" ]

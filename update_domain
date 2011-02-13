@@ -330,10 +330,11 @@ git checkout "$SITE_BRANCH" || exit 18
 
 if [ -f .gitmodules ]
 then
-  git submodule init || exit 19
+  git submodule init || exit 19  
   git submodule update --recursive --init || exit 20
 
   git submodule foreach --recursive git checkout master || exit 21
+  git submodule foreach --recursive git pull origin master || exit 22
 fi
 
 echo "-------------------------------------------------------------------------"
@@ -342,13 +343,13 @@ echo -e " Fetching remote database.\n"
 
 # Remote database.
 echo "Performing remote database commit for $REMOTE_DOMAIN at $REMOTE_HOST."
-ssh "$REMOTE_HOST" "dbcommit $REMOTE_DOMAIN 'Remote database backup for update by $USER@$HOSTNAME'" || exit 22
+ssh "$REMOTE_HOST" "dbcommit $REMOTE_DOMAIN 'Remote database backup for update by $USER@$HOSTNAME'" || exit 23
 
 # Local database.
 echo "Pulling remote database into: $DB_DIR."
-cd "$DB_DIR" || exit 23
-git pull origin "$DB_BRANCH" || exit 24
-git checkout "$DB_BRANCH" || exit 25
+cd "$DB_DIR" || exit 24
+git pull origin "$DB_BRANCH" || exit 25
+git checkout "$DB_BRANCH" || exit 26
 
 
 echo "-------------------------------------------------------------------------"
@@ -357,11 +358,11 @@ echo -e " Importing the site database and files.\n"
 
 # Database
 echo "Importing database $DB_FILE into $DB_NAME"
-mysql --user="$DB_USER" --password="$DB_PASS" "$DB_NAME" < "$DB_FILE" || exit 26
+mysql --user="$DB_USER" --password="$DB_PASS" "$DB_NAME" < "$DB_FILE" || exit 27
 
 # Files
 echo "Copying files from $DB_FILES_DIR to $SITE_FILES_DIR"
-cp -fR --preserve "$DB_FILES_DIR" "$SITE_FILES_DIR" || exit 27
+cp -fR --preserve "$DB_FILES_DIR" "$SITE_FILES_DIR" || exit 28
 
 echo -e "\nSite $LOCAL_DOMAIN updated sucessfully.\n"
 

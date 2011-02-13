@@ -66,12 +66,8 @@ INIT_DIR=`get_command_location $0`
 
 # Default parameters.
 PARAMS=`normalize_params "$@"`
-
 # echo "PARAMS = $PARAMS"
-# echo "FIRST = $1"
-# echo "SECOND = $2"
-# echo "THIRD = $3"
-# echo "FOURTH = $4"
+
 
 HELP_WANTED=''
 COMMIT_MESSAGE=''
@@ -99,7 +95,6 @@ set -- $PARAMS
 # echo "FIRST = $1"
 # echo "SECOND = $2"
 # echo "THIRD = $3"
-# echo "FOURTH = $4"
 
 # Standard help message.
 if [ "$HELP_WANTED" ]

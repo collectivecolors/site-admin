@@ -62,9 +62,16 @@ INIT_DIR=`get_command_location $0`
 #-------------------------------------------------------------------------------
 # Parameters
 
+# echo "INPUT = $@"
 
 # Default parameters.
 PARAMS=`normalize_params "$@"`
+
+# echo "PARAMS = $PARAMS"
+# echo "FIRST = $1"
+# echo "SECOND = $2"
+# echo "THIRD = $3"
+# echo "FOURTH = $4"
 
 HELP_WANTED=''
 COMMIT_MESSAGE=''
@@ -89,6 +96,10 @@ parse_option '-f|--db-filename' DB_FILENAME '' 'Database schema filename must be
 set -- $PARAMS
 
 # echo "PARAMS = $PARAMS"
+# echo "FIRST = $1"
+# echo "SECOND = $2"
+# echo "THIRD = $3"
+# echo "FOURTH = $4"
 
 # Standard help message.
 if [ "$HELP_WANTED" ]
@@ -179,7 +190,7 @@ then
     git init
   fi
   
-  # Dump the database to the dbrepo directory.
+  # Dump the database to the database backup directory.
   rm -f "$DB_FILE"
   
   cd "$WWW_DIR"  

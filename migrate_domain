@@ -353,7 +353,7 @@ DB_DIR="$DOMAIN_DIR/db"
 DB_SETTINGS_DIR="$DB_DIR/default"
 SITE_SETTINGS_DIR="$SITE_DIR/sites/default"
 
-REMOTE_SITE_DIR="sites/$REMOTE_DOMAIN/www"
+REMOTE_SITE_DIR="Sites/$REMOTE_DOMAIN/www"
 REMOTE_DB_DIR="Database/sites/$REMOTE_DOMAIN"
 
 # Connection string

@@ -204,7 +204,7 @@ then
   echo "Copying settings and files from $WWW_DIR/sites/default to $DB_DIR/default"
   
   rm -fR "$DB_DIR/default"  
-  cp -R --preserve "$WWW_DIR/sites/default" "$DB_DIR/default"
+  cp -LR --preserve "$WWW_DIR/sites/default" "$DB_DIR/default"
   
   echo "Site settings and files copied."
   echo "-----------------------------------------------------------"

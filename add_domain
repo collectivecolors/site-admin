@@ -259,7 +259,7 @@ fi
 
 if [ ! $DB_NAME ]
 then
-  $DB_NAME=$DOMAIN_NAME
+  DB_NAME=$DOMAIN_NAME
 fi
 # MySQL only allows for a 64 character database name.
 if [ ${DB_NAME:0:64} != $DB_NAME ]

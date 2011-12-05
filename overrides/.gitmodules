@@ -1,0 +1,147 @@
+[submodule "sites/all/modules/contrib/admin_menu"]
+	path = sites/all/modules/contrib/admin_menu
+	url = git://repo.collectivecolors.com/drupal/modules/admin_menu.git
+[submodule "sites/all/modules/contrib/advanced_help"]
+	path = sites/all/modules/contrib/advanced_help
+	url = git://repo.collectivecolors.com/drupal/modules/advanced_help.git
+[submodule "sites/all/modules/contrib/devel"]
+	path = sites/all/modules/contrib/devel
+	url = git://repo.collectivecolors.com/drupal/modules/devel.git
+[submodule "sites/all/modules/contrib/token"]
+	path = sites/all/modules/contrib/token
+	url = git://repo.collectivecolors.com/drupal/modules/token.git
+[submodule "sites/all/modules/contrib/util"]
+	path = sites/all/modules/contrib/util
+	url = git://repo.collectivecolors.com/drupal/modules/util.git
+[submodule "sites/all/modules/contrib/ctools"]
+	path = sites/all/modules/contrib/ctools
+	url = git://repo.collectivecolors.com/drupal/modules/ctools.git
+[submodule "sites/all/modules/contrib/features"]
+	path = sites/all/modules/contrib/features
+	url = git://repo.collectivecolors.com/drupal/modules/features.git
+[submodule "sites/all/modules/contrib/pathauto"]
+	path = sites/all/modules/contrib/pathauto
+	url = git://repo.collectivecolors.com/drupal/modules/pathauto.git
+[submodule "sites/all/modules/contrib/vertical_tabs"]
+	path = sites/all/modules/contrib/vertical_tabs
+	url = git://repo.collectivecolors.com/drupal/modules/vertical_tabs.git
+[submodule "sites/all/modules/contrib/securepages"]
+	path = sites/all/modules/contrib/securepages
+	url = git://repo.collectivecolors.com/drupal/modules/securepages.git
+[submodule "sites/all/modules/contrib/services"]
+	path = sites/all/modules/contrib/services
+	url = git://repo.collectivecolors.com/drupal/modules/services.git
+[submodule "sites/all/modules/contrib/deploy"]
+	path = sites/all/modules/contrib/deploy
+	url = git://repo.collectivecolors.com/drupal/modules/deploy.git
+[submodule "sites/all/modules/contrib/cck"]
+	path = sites/all/modules/contrib/cck
+	url = git://repo.collectivecolors.com/drupal/modules/cck.git
+[submodule "sites/all/modules/contrib/link"]
+	path = sites/all/modules/contrib/link
+	url = git://repo.collectivecolors.com/drupal/modules/link.git
+[submodule "sites/all/modules/contrib/filefield"]
+	path = sites/all/modules/contrib/filefield
+	url = git://repo.collectivecolors.com/drupal/modules/filefield.git
+[submodule "sites/all/modules/contrib/mimedetect"]
+	path = sites/all/modules/contrib/mimedetect
+	url = git://repo.collectivecolors.com/drupal/modules/mimedetect.git
+[submodule "sites/all/modules/contrib/getid3"]
+	path = sites/all/modules/contrib/getid3
+	url = git://repo.collectivecolors.com/drupal/modules/getid3.git
+[submodule "sites/all/modules/contrib/imagefield"]
+	path = sites/all/modules/contrib/imagefield
+	url = git://repo.collectivecolors.com/drupal/modules/imagefield.git
+[submodule "sites/all/modules/contrib/imageapi"]
+	path = sites/all/modules/contrib/imageapi
+	url = git://repo.collectivecolors.com/drupal/modules/imageapi.git
+[submodule "sites/all/modules/contrib/imagecache"]
+	path = sites/all/modules/contrib/imagecache
+	url = git://repo.collectivecolors.com/drupal/modules/imagecache.git
+[submodule "sites/all/modules/contrib/views"]
+	path = sites/all/modules/contrib/views
+	url = git://repo.collectivecolors.com/drupal/modules/views.git
+[submodule "sites/all/modules/contrib/views_bulk_operations"]
+	path = sites/all/modules/contrib/views_bulk_operations
+	url = git://repo.collectivecolors.com/drupal/modules/views_bulk_operations.git
+[submodule "sites/all/modules/contrib/editablefields"]
+	path = sites/all/modules/contrib/editablefields
+	url = git://repo.collectivecolors.com/drupal/modules/editablefields.git
+[submodule "sites/all/modules/contrib/ajax_load"]
+	path = sites/all/modules/contrib/ajax_load
+	url = git://repo.collectivecolors.com/drupal/modules/ajax_load.git
+[submodule "sites/all/modules/contrib/draggableviews"]
+	path = sites/all/modules/contrib/draggableviews
+	url = git://repo.collectivecolors.com/drupal/modules/draggableviews.git
+[submodule "sites/all/modules/contrib/panels"]
+	path = sites/all/modules/contrib/panels
+	url = git://repo.collectivecolors.com/drupal/modules/panels.git
+[submodule "sites/all/modules/contrib/panels_everywhere"]
+	path = sites/all/modules/contrib/panels_everywhere
+	url = git://repo.collectivecolors.com/drupal/modules/panels_everywhere.git
+[submodule "sites/all/modules/contrib/notifications"]
+	path = sites/all/modules/contrib/notifications
+	url = git://repo.collectivecolors.com/drupal/modules/notifications.git
+[submodule "sites/all/modules/contrib/messaging"]
+	path = sites/all/modules/contrib/messaging
+	url = git://repo.collectivecolors.com/drupal/modules/messaging.git
+[submodule "sites/all/modules/contrib/feeds"]
+	path = sites/all/modules/contrib/feeds
+	url = git://repo.collectivecolors.com/drupal/modules/feeds.git
+[submodule "sites/all/modules/contrib/workflow"]
+	path = sites/all/modules/contrib/workflow
+	url = git://repo.collectivecolors.com/drupal/modules/workflow.git
+[submodule "sites/all/modules/contrib/nodewords"]
+	path = sites/all/modules/contrib/nodewords
+	url = git://repo.collectivecolors.com/drupal/modules/nodewords.git
+[submodule "sites/all/themes/contrib/rootcandy"]
+	path = sites/all/themes/contrib/rootcandy
+	url = git://repo.collectivecolors.com/drupal/themes/rootcandy.git
+[submodule "sites/all/themes/contrib/panany"]
+	path = sites/all/themes/contrib/panany
+	url = git://repo.collectivecolors.com/drupal/themes/panany.git
+[submodule "sites/all/modules/contrib/jquery_ui"]
+	path = sites/all/modules/contrib/jquery_ui
+	url = git://repo.collectivecolors.com/drupal/modules/jquery_ui.git
+[submodule "sites/all/modules/contrib/job_scheduler"]
+	path = sites/all/modules/contrib/job_scheduler
+	url = git://repo.collectivecolors.com/drupal/modules/job_scheduler.git
+[submodule "sites/all/libraries/getid3"]
+	path = sites/all/libraries/getid3
+	url = git://repo.collectivecolors.com/php/getid3.git
+[submodule "sites/all/modules/contrib/path_visibility"]
+	path = sites/all/modules/contrib/path_visibility
+	url = git://repo.collectivecolors.com/drupal/modules/path_visibility.git
+[submodule "sites/all/modules/contrib/strongarm"]
+	path = sites/all/modules/contrib/strongarm
+	url = git://repo.collectivecolors.com/drupal/modules/strongarm.git
+[submodule "sites/all/modules/contrib/imce"]
+	path = sites/all/modules/contrib/imce
+	url = git://repo.collectivecolors.com/drupal/modules/imce.git
+[submodule "sites/all/modules/contrib/imce_wysiwyg"]
+	path = sites/all/modules/contrib/imce_wysiwyg
+	url = git://repo.collectivecolors.com/drupal/modules/imce_wysiwyg.git
+[submodule "sites/all/modules/contrib/wysiwyg"]
+	path = sites/all/modules/contrib/wysiwyg
+	url = git://repo.collectivecolors.com/drupal/modules/wysiwyg.git
+[submodule "sites/all/modules/contrib/node_pager"]
+	path = sites/all/modules/contrib/node_pager
+	url = git://repo.collectivecolors.com/drupal/modules/node_pager.git
+[submodule "sites/all/libraries/tinymce"]
+	path = sites/all/libraries/tinymce
+	url = git://repo.collectivecolors.com/js/tinymce.git
+[submodule "sites/all/libraries/simplepie"]
+	path = sites/all/libraries/simplepie
+	url = git://repo.collectivecolors.com/php/simplepie.git
+[submodule "sites/all/modules/contrib/date"]
+	path = sites/all/modules/contrib/date
+	url = git://repo.collectivecolors.com/drupal/modules/date.git
+[submodule "sites/all/modules/contrib/diff"]
+	path = sites/all/modules/contrib/diff
+	url = git://repo.collectivecolors.com/drupal/modules/diff.git
+[submodule "sites/all/modules/contrib/better_formats"]
+	path = sites/all/modules/contrib/better_formats
+	url = git://repo.collectivecolors.com/drupal/modules/better_formats.git
+[submodule "sites/all/modules/contrib/workflow_fields"]
+	path = sites/all/modules/contrib/workflow_fields
+	url = git://repo.collectivecolors.com/drupal/modules/workflow_fields.git

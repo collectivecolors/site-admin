@@ -328,6 +328,13 @@ cd "$SITE_DIR" || exit 16
 git pull origin "$SITE_BRANCH" || exit 17
 git checkout "$SITE_BRANCH" || exit 18
 
+if [ -f .gitmodules ]
+then
+  git submodule init || exit 16
+  git submodule update || exit 17
+
+  git submodule foreach git checkout master || exit 18
+fi
 
 echo "-------------------------------------------------------------------------"
 echo ""
